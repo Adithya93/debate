@@ -12,14 +12,20 @@ html(lang="en" data-ng-app="debateTutoring")
     script(src='js/debateTutoring.js')
 
   body()
-    div.section.hero(data-ng-controller="accountController")
+    div.section.hero(data-ng-controller="newController")
       div.container
-        h2 giATM  
-        form(action="/getUser" method="post")
+        h2 Debate Tutoring  
+        form(action="/newUser" method="post")
           div.row
             div.six.columns
-              label(for="nameField") Name
+              label(for="nameField") Old User
               input.u-full-width#nameField(type="text" name="userName")
-          input.button-primary(type="submit",value="Remit!")
+          input.button-primary(type="submit",value="Return")
+
+        form(action="/validate" method="get")
+          div.row
+            div.six.columns
+              label(for="nameField") New User
+          input.button-primary(type="submit",value="Sign in with Google!")
 
         
