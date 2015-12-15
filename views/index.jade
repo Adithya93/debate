@@ -1,0 +1,25 @@
+doctype 
+html(lang="en" data-ng-app="debateTutoring")
+  head
+    title Debate Tutoring
+    meta(charset="utf-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    link(rel="stylesheet", href="css/normalize.css")
+    link(rel="stylesheet", href="css/skeleton.css")
+    link(rel="stylesheet", href="//fonts.googleapis.com/css?family=Raleway:400,300,600")
+    link(rel="icon" type="image/png" href="favicon.png")
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
+    script(src='js/debateTutoring.js')
+
+  body()
+    div.section.hero(data-ng-controller="accountController")
+      div.container
+        h2 giATM  
+        form(action="/getUser" method="post")
+          div.row
+            div.six.columns
+              label(for="nameField") Name
+              input.u-full-width#nameField(type="text" name="userName")
+          input.button-primary(type="submit",value="Remit!")
+
+        
