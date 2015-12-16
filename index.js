@@ -72,13 +72,19 @@ app.post('/newUser', function(req, res) {
 });
 
 
+/***
 app.get('/auth/google', function(req, res) {
 	console.log("Trying to validate user through Google");
 	passport.authenticate('google', {
   scope: 'openid email'
 });
 });
+***/
+app.get('/auth/google', passport.authenticate('google', {
+    scope: 'openid email'
+}));
 
+/***
 app.get('/auth/google/return', function(req, res) {
 	passport.authenticate('google', {
   	successRedirect: '/',
@@ -86,6 +92,11 @@ app.get('/auth/google/return', function(req, res) {
 		});
 	console.log("User has been retrieved as " + req.user);
 }); 
+***/
+app.get('/auth/google/return', passport.authenticate('google', {
+    successRedirect: '/',
+    failureRedirect: '/'
+}));
 
 
 
