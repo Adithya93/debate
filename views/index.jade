@@ -22,7 +22,7 @@ html(lang="en" data-ng-app="debateTutoring")
               input.u-full-width#nameField(type="text" name="userName")
           input.button-primary(type="submit",value="Return")
 
-        form(action="/validate" method="get")
+        form(action="/auth/google" method="get")
           div.row
             div.six.columns
               label(for="nameField") New User

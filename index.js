@@ -49,15 +49,12 @@ var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.ROOT_URL + "/validate/return"
+    callbackURL: process.env.ROOT_URL + "/auth/google/return"
 }, function(token, tokenSecret, profile, done) {
     profile = profile._json;
     console.log(profile);
     done(null, profile);
 }));
-
-
-
 
 app.get('/', function(req, res) {
 
@@ -75,14 +72,14 @@ app.post('/newUser', function(req, res) {
 });
 
 
-app.get('/validate', function(req, res) {
+app.get('/auth/google', function(req, res) {
 	console.log("Trying to validate user through Google");
 	passport.authenticate('google', {
-    scope: 'openid email'
+  scope: 'openid email'
 });
 });
 
-app.get('/validate/return', function(req, res) {
+app.get('/auth/google/return', function(req, res) {
 	passport.authenticate('google', {
   	successRedirect: '/',
   	failureRedirect: '/'
