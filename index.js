@@ -4,9 +4,6 @@ var http = require('http');
 var dotenv = require('dotenv');
 dotenv.load();
 
-
-
-
 var session = require('cookie-session');
 var passport = require('passport');
 var favicon = require('serve-favicon'); //serve favicon for site
@@ -15,7 +12,7 @@ var munge = require('munge'); //obfuscate email
 var bodyParser = require('body-parser');
 var moment = require('moment');
 
-console.log(process.env.NODE_ENV);
+//console.log(process.env.NODE_ENV);
 
 app.listen(process.env.PORT || 3000, function() {
   console.log("Here we go!");
@@ -32,7 +29,7 @@ if (process.env.NODE_ENV == "dev"){
   );
 }
 else {
-	console.log("Not in development mode");
+//	console.log("Not in development mode");
   app.use(session({
       secret: process.env.SESSION_SECRET
   }));
@@ -52,7 +49,7 @@ var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.ROOT_URL + "/auth/google/return"
+    callbackURL: process.env.ROOT_URL + "/validate/return"
 }, function(token, tokenSecret, profile, done) {
     profile = profile._json;
     console.log(profile);
@@ -85,10 +82,13 @@ app.get('/validate', function(req, res) {
 });
 });
 
-app.get('/auth/google/return', passport.authenticate('google', {
-    successRedirect: '/',
-    failureRedirect: '/'
-}));
+app.get('/validate/return', function(req, res) {
+	passport.authenticate('google', {
+  	successRedirect: '/',
+  	failureRedirect: '/'
+		});
+	console.log("User has been retrieved as " + req.user);
+}); 
 
 
 
