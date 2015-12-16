@@ -64,13 +64,25 @@ app.get('/', function(req, res) {
 	res.end();
 });
 
-app.post('/newUser', function(req, res) {
+app.post('/oldUser', function(req, res) {
 	res.set('text/plain');
 	res.write('Alright, hang in there!');
 	res.end();
 	console.log('Someone tried to join!');
 });
 
+app.get('/newUser', function(req, res) {
+
+
+	var user = req.user;
+	res.set('text/plain');
+	res.write('Welcome, ' + user.name + '!');
+	res.end();
+  /***
+  res.render('newUser');
+	console.log('Redirected to new user page!');
+  ***/
+});
 
 /***
 app.get('/auth/google', function(req, res) {
@@ -94,10 +106,14 @@ app.get('/auth/google/return', function(req, res) {
 }); 
 ***/
 app.get('/auth/google/return', passport.authenticate('google', {
-    successRedirect: '/',
+    successRedirect: '/newUser',
     failureRedirect: '/'
 }));
 
 
-
+// Get Requests to this path are made by UserController
+app.get('/userInfo', function(req, res) {
+  console.log("Received request from client side for user info\n");
+	res.json(req.user);
+});
 

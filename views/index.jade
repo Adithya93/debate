@@ -9,13 +9,13 @@ html(lang="en" data-ng-app="debateTutoring")
     link(rel="stylesheet", href="//fonts.googleapis.com/css?family=Raleway:400,300,600")
     link(rel="icon" type="image/png" href="favicon.png")
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
-    script(src='js/debateTutoring.js')
+    script(src='js/debateCoaching.js')
 
   body()
-    div.section.hero(data-ng-controller="newController")
+    div.section.hero(data-ng-controller="UserController")
       div.container
         h2 Debate Tutoring  
-        form(action="/newUser" method="post")
+        form(action="/oldUser" method="post")
           div.row
             div.six.columns
               label(for="nameField") Old User
