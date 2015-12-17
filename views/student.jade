@@ -1,0 +1,53 @@
+doctype 
+html(lang="en" data-ng-app="DebateCoaching")
+  head
+    title Debate Tutoring
+    meta(charset="utf-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    link(rel="stylesheet", href="css/normalize.css")
+    link(rel="stylesheet", href="css/skeleton.css")
+    link(rel="stylesheet", href="//fonts.googleapis.com/css?family=Raleway:400,300,600")
+    link(rel="icon" type="image/png" href="favicon.png")
+    script(src='//code.jquery.com/jquery-latest.min.js')
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
+    script(src='myNgApp/UserController.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
+
+  body.container-fluid(ng-controller="UserController")
+    h2 Welcome {{user.name}}!
+    if (false)
+      div.profile
+        p Student since {{user.since}}
+        ul.info(ng-repeat= "key in Object.keys(user.info)")
+          li {{key}} : {{user.info[key]}}
+        table.history
+          thead
+            tr
+              th Date
+              th Duration
+          tr(ng-repeat= "train in user.trainings")
+            td train.date
+            td train.duration
+    else
+      div.info
+        h3 Tell Us More About Yourself!
+        form(name="studentInfo", ng-submit="update(student)")
+          .row
+            .col-xs-10
+              label(for="experience") Years of Experience
+              input.form-control(required, type='number', ng-model="student.experience")
+          .row
+            .col-xs-10
+              label(for="availableDays") Preferred Tutoring Days
+              select.form-control(required, ng-model="student.availableDays", ng-options="d for d in days")
+          .row
+            .col-xs-10
+              label(for="availableTimes") Preferred Timings
+              select.form-control(required, ng-model="student.availableTimes", ng-options="t for t in times")
+          .row
+            .col-xs-10
+              label(for="preferredTutor") Preferred Tutor
+              select.form-control(required, ng-model="student.preferredTutor", ng-options="t for t in tutors")
+            .col-xs-2
+              button.btn.btn-success
+                i.glyphicon.glyphicon-plus

@@ -13,14 +13,4 @@ html(lang="en" data-ng-app="DebateCoaching")
 
   body.container-fluid(ng-controller="UserController")
     h2 Welcome {{user.name}}!
-      div.container
-        span
-          form(action="/student" method="post")
-            label(for="role") Find an awesome coach!
-              div.buttonHolder
-                input.button-primary(type="submit",value="I'm a (wannabe) debater!")
-        span
-          form(action="/coach" method="post")
-            label(for="role") Share your wisdom!
-              div.buttonHolder
-                input.button-primary(type="submit", value="I'm a coach!")
+    h3 Coach since {{user.since}}

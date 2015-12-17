@@ -7,31 +7,31 @@ html(lang="en" data-ng-app="DebateCoaching")
     link(rel="stylesheet", href="css/normalize.css")
     link(rel="stylesheet", href="css/skeleton.css")
     link(rel="stylesheet", href="//fonts.googleapis.com/css?family=Raleway:400,300,600")
-    link(rel="stylesheet", href='//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/lumen/bootstrap.min.css')
-    
     link(rel="icon" type="image/png" href="favicon.png")
-    script(src='//code.jquery.com/jquery-latest.min.js')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
     script(src='myNgApp/UserController.js')
-    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
-    
 
   body.container-fluid(ng-controller="UserController")
     div.section.hero
       if (!user)
         div.container
           h2 Debate Coaching
-          form(action="/auth/google" method="get")
-            h3 Have an Account?
+          form(action="/oldUser" method="post")
+            h3 Sign In
             div.row
               div.six.columns
-            input.button-primary(type="submit",value="Sign In with Google!")
+                label(for="nameField") Username
+                input.u-full-width#nameField(type="text" name="userName")
+                label(for="passField") Password
+                input.u-full-width#nameField(type="text" name="password")
+            input.button-primary(type="submit",value="Return")
 
           form(action="/auth/google" method="get")
             h3 New User?
             div.row
               div.six.columns
-            input.button-primary(type="submit",value="Sign Up with Google!")
+                label(for="nameField") Sign Up
+            input.button-primary(type="submit",value="Sign in with Google!")
       else
         h2 user.name
 
