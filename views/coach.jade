@@ -13,4 +13,19 @@ html(lang="en" data-ng-app="DebateCoaching")
 
   body.container-fluid(ng-controller="UserController")
     h2 Welcome {{user.name}}!
-    h3 Coach since {{user.since}}
+    div.profile(ng-show="user.info")
+      p Coach since {{user.since}}
+      ul.info(ng-repeat= "key in user.info")
+        li <b>{{format(key[0]).toUpperCase()}}</b> : {{key[1]}}
+      table.history(ng-show="user.trainings")
+        thead
+          tr
+            th Date
+            th Duration
+        tr(ng-repeat= "train in user.trainings")
+          td train.date
+          td train.duration
+      div.prompt(ng-hide="user.trainings")
+        p You don't have any training sessions lined up..
+        p
+          a.appointments(href="/bookings") Spruce up my profile!

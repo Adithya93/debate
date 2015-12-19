@@ -44,11 +44,18 @@ client.hmset('booyakashabounty@gmail.com', 'object', JSON.stringify(obj), functi
 				console.log("Error retrieving list");
 			}
 			else {
-				//console.log("Object is " + JSON.stringify(response));
 				console.log("Object is " + response);
-				//console.log("Number of keys in nested object: " + Object.keys(response).length);
-				//console.log("Value of tutor key in nested object: " + response['tutor']);
 			}
 		});
+	}
+});
+
+client.hgetall('raghu.singapore@gmail.com', function(err, res) {
+	if (err) {
+		console.log("Unable to retrieve value of test key : " + err);
+	}
+
+	else {
+		console.log(res);
 	}
 });

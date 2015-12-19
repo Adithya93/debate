@@ -8,32 +8,24 @@ html(lang="en" data-ng-app="DebateCoaching")
     link(rel="stylesheet", href="css/skeleton.css")
     link(rel="stylesheet", href="css/custom.css")
     link(rel="stylesheet", href="//fonts.googleapis.com/css?family=Raleway:400,300,600")
-    link(rel="stylesheet", href='//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/lumen/bootstrap.min.css')
-    
     link(rel="icon" type="image/png" href="favicon.png")
     script(src='//code.jquery.com/jquery-latest.min.js')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
     script(src='myNgApp/UserController.js')
+    script(src='myNgApp/BookingsController.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
-    
 
-  body.container-fluid(ng-controller="UserController")
-    div.section.hero
-      div.container
-        h2 Debate Coaching
-        form(action="/auth/google" method="get")
-          h3 Have an Account?
-          div.row
-            div.six.columns
-          input.button-primary(type="submit",value="Sign In with Google!")
-
-        form(action="/auth/google" method="get")
-          h3 New User?
-          div.row
-            div.six.columns
-          input.button-primary(type="submit",value="Sign Up with Google!")
+  body.container-fluid(ng-controller="BookingsController")
+    h2 Your Coach : {{tutor}}!
+    div.coachTimes(ng-show="slots.length")
+      p His Available Times
+      ul#available_Times(ng-repeat="s in slots")
+        li {{s}}
+    div.background(ng-show="tutorObj.background")
+      p His Debating Background
+      ul#coachRecord(ng-repeat="r in tutorObj.record")
+        li {{r}}
+    div.temp(ng-hide="tutorObj.background")
+      p Your Coach hasn't uploaded any records (Maybe he is actually a NOOB... :O)
 
 
-
-
-        

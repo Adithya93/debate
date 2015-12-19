@@ -68,10 +68,10 @@ client.on('connect', function() {
 
 app.get('/', function(req, res) {
 
-	res.set('text/html');
+	//res.set('text/html');
 	//res.write("Booyakasha Bounty!");
   res.render('index');
-	res.end();
+	//res.end();
 });
 
 /***
@@ -131,32 +131,70 @@ app.get('/userInfo', function(req, res) {
       res.json(req.user);
     }
     else {
-      res.json(obj);
+      console.log("Retrieved object to be " + JSON.stringify(obj));
+      if (obj !== null && obj !== undefined) {
+        res.json(obj);
+      }
+      else {
+        res.json(req.user);
+      }
     }
   });
   }
 });
 
+app.get('/tutors', function(req, res) {
+  res.set('application/json');
+  client.lrange('tutors', 0, -1, function(err, rep) {
+    if (err) {
+      console.log("Unable to retrieve list of tutors : " + err);
+      res.sendStatus(201);
+    }
+    else {
+      res.json(rep);
+    }
+  });
+});
+
 app.post('/coach', function(req, res) {
   req.user.role = 'coach';
   req.user.since = new Date().toDateString();
-  client.hmset(req.user.email, "name", req.user.name, "email", req.user.email, "role", req.user.role, "since", req.user.since, function(err, res) {
+  //client.hmset(req.user.email, "name", req.user.name, "email", req.user.email, "role", req.user.role, "since", req.user.since, function(err, res) {
+  client.hmset(req.user.name, "name", req.user.name, "email", req.user.email, "role", req.user.role, "since", req.user.since, function(err, res) {
     if (!err) {
-     console.log("Saved user " + req.user.name + " to database as " + req.user.role); 
+     console.log("Saved user " + req.user.name + " to database as " + req.user.role);
+     res.redirect('/coach');
+     client.lpush('tutors', req.user.name, function(error, rep) {
+      if (error) {
+        console.log("Unable to save new tutor to list of tutors in database");
+      }
+      else {
+        console.log("Total number of tutors in database now: " + rep);
+      }
+     }); 
     }
   });
-  res.redirect('/coach');
+  //res.redirect('/coach');
 });
 
 app.post('/student', function(req, res) {
   req.user.role = 'student';
   req.user.since = new Date().toDateString();
-  client.hmset(req.user.email, "name", req.user.name, "email", req.user.email, "role", req.user.role, "since", req.user.since, function(err, res) {
+  client.hmset(req.user.email, "name", req.user.name, "email", req.user.email, "role", req.user.role, "since", req.user.since, function(err, response) {
     if (!err) {
-     console.log("Saved user " + req.user.name + " to database as " + req.user.role); 
+     console.log("Saved user " + req.user.name + " to database as " + req.user.role);
+     res.redirect('/student');
+     client.lpush('students', req.user.name, function(error, rep) {
+      if (error) {
+        console.log("Unable to save new student to list of students in database");
+      }
+      else {
+        console.log("Total number of students in database now: " + rep);
+      }
+     }); 
     }
   });
-  res.redirect('/student');
+  //res.redirect('/student');
 });
 
 app.get('/coach', function(req, res) {
@@ -167,15 +205,6 @@ app.get('/student', function(req, res) {
   res.render('student');
 });
 
-/***
-app.get('/coach/new', function(req, res) {
-  res.render('coach/new');
-});
-
-app.get('/student/new', function(req, res) {
-  res.render('student/new');
-});
-***/
 app.post('/student/info', function(req, res) {
   var info = JSON.stringify(req.body);
   console.log("Received the following info from new student " + info);
@@ -185,10 +214,54 @@ app.post('/student/info', function(req, res) {
     }
     else {
       console.log(response);
+      res.redirect('/student');
     }
   });
+//  res.redirect('/student');
 });
 
 app.post('/coach/info', function(req, res) {
-  console.log("Received the following info from new coach " + JSON.stringify(req.body));
+  var info = JSON.stringify(req.body);
+  console.log("Received the following info from new coach " + info);
+  //client.hmset(req.user.email, 'info', info, function(error, response) {
+  client.hmset(req.user.name, 'info', info, function(error, response) {
+    if (error) {
+      console.log("Unable to save user info");
+    }
+    else {
+      console.log(response);
+      res.redirect('/coach');
+    }
+  });
+//  res.redirect('/coach');
 });
+
+app.get('/bookings', function(req, res) {
+  if (!req.user) {
+    res.redirect('/');
+  }
+  else {
+    res.render('bookings'); // bookings.jade should use BookingsController to parse Coach Info from JSON String sent by server
+  }
+});
+
+app.get('/coachInfo/:name', function(req, res) {
+  res.set('application/json');
+  var name = req.params.name;
+  console.log("Trying to retrieve info for coach " + name + " for student " + req.user.name);
+  client.hget(name, 'info', function(error, reply) {
+    if (error) {
+      console.log("Unable to retrieve coach's available times : " + error);
+    }
+    else {
+      console.log("Coach is free at " + JSON.stringify(reply));
+      res.json(reply);
+    }
+  });
+});
+/*** KIV - Needs form upload
+app.get('/profile', function(req, res) {
+
+
+});
+***/

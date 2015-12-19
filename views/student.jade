@@ -6,6 +6,7 @@ html(lang="en" data-ng-app="DebateCoaching")
     meta(name="viewport", content="width=device-width, initial-scale=1")
     link(rel="stylesheet", href="css/normalize.css")
     link(rel="stylesheet", href="css/skeleton.css")
+    link(rel="stylesheet", href="css/custom.css")
     link(rel="stylesheet", href="//fonts.googleapis.com/css?family=Raleway:400,300,600")
     link(rel="icon" type="image/png" href="favicon.png")
     script(src='//code.jquery.com/jquery-latest.min.js')
@@ -15,39 +16,55 @@ html(lang="en" data-ng-app="DebateCoaching")
 
   body.container-fluid(ng-controller="UserController")
     h2 Welcome {{user.name}}!
-    if (false)
-      div.profile
-        p Student since {{user.since}}
-        ul.info(ng-repeat= "key in Object.keys(user.info)")
-          li {{key}} : {{user.info[key]}}
-        table.history
-          thead
-            tr
-              th Date
-              th Duration
-          tr(ng-repeat= "train in user.trainings")
-            td train.date
-            td train.duration
-    else
-      div.info
-        h3 Tell Us More About Yourself!
-        form(name="studentInfo", ng-submit="update(student)")
-          .row
-            .col-xs-10
-              label(for="experience") Years of Experience
-              input.form-control(required, type='number', ng-model="student.experience")
-          .row
-            .col-xs-10
-              label(for="availableDays") Preferred Tutoring Days
-              select.form-control(required, ng-model="student.availableDays", ng-options="d for d in days")
-          .row
-            .col-xs-10
-              label(for="availableTimes") Preferred Timings
-              select.form-control(required, ng-model="student.availableTimes", ng-options="t for t in times")
-          .row
-            .col-xs-10
-              label(for="preferredTutor") Preferred Tutor
-              select.form-control(required, ng-model="student.preferredTutor", ng-options="t for t in tutors")
-            .col-xs-2
-              button.btn.btn-success
-                i.glyphicon.glyphicon-plus
+    div.profile(ng-show="user.info")
+      p Student since {{user.since}}
+      ul.info(ng-repeat= "key in user.info")
+        li <b>{{format(key[0]).toUpperCase()}}</b> : {{format(key[1])}}
+      table.history(ng-show="user.trainings")
+        thead
+          tr
+            th Date
+            th Duration
+        tr(ng-repeat= "train in user.trainings")
+          td train.date
+          td train.duration
+      div.prompt(ng-hide="user.trainings")
+        p You don't have any training sessions lined up...
+        p
+          a.appointments(href="/bookings") Book an appointment with my preferred tutor!
+
+
+    div.info(ng-hide="user.info")
+      h3 Tell Us More About Yourself!
+      form(name="studentInfo", ng-submit="update(student)")
+        .row
+          .col-xs-10
+            label(for="Experience") Years of Experience
+            input.form-control(required, type='number', ng-model="student.Experience")
+        .row
+          .col-xs-10
+            label(for="Available Days") Preferred Tutoring Days
+            select.form-control(multiple="", required, ng-model="student.Available_Days", ng-options="d for d in days")
+        .row
+          .col-xs-10
+            label(for="Available Times") Preferred Timings
+            select.form-control(multiple="", required, ng-model="student.Available_Times", ng-options="t for t in times")
+        .row <b>Preferred Tutoring Days</b>
+          div.linebreak
+          span.form-inline(ng-repeat="d in days")
+            span.checkbox
+              label-inline(for="booyakasha") {{d}}
+                input.checkbox(type="checkbox", value="", required, ng-model="student.booyakasha")
+        .row <b>Preferred Timings</b>
+          div.linebreak
+          span.form-inline(ng-repeat="t in times")
+            span.checkbox
+              label-inline(for="yakshemesh") {{t}}
+                input.checkbox(type="checkbox", value="", required, ng-model="student.yakshemesh")
+        .row
+          .col-xs-10
+            label(for="Preferred Tutor") Preferred Tutor
+            select.form-control(required, ng-model="student.Preferred_Tutor", ng-options="t for t in tutors")
+          .col-xs-2
+            button.btn.btn-success Begin My Debate Adventure!
+              i.glyphicon.glyphicon-plus

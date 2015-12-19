@@ -1,0 +1,12 @@
+body {
+	text-align : center;
+}
+
+span.form-inline {
+	margin-right : 30px;
+}
+
+input.checkbox {
+	margin-left : 10px;
+	margin-right : 10px;
+}
