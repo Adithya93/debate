@@ -108,12 +108,22 @@ app.get('/verify', function(req, res) {
         res.redirect('/' + obj['role']);
       }
       else {
-        res.redirect('/newUser');
+        client.hgetall(req.user.name, function(error, reply) {
+          if (error) {
+            console.log("Unable to retrieve name key for user : " + error);
+          }
+          else {
+            if (reply != undefined && Object.keys(reply).length > 0) {
+              res.redirect('/' + reply['role']);
+            }
+            else {
+              res.redirect('/newUser');
+            }
+          }
+        });
       }
     }
-  })
-
-
+  });
 });
 
 
@@ -136,10 +146,20 @@ app.get('/userInfo', function(req, res) {
         res.json(obj);
       }
       else {
-        res.json(req.user);
+        console.log("No key stored in REDIS for this email, user might be coach. Trying to retrieve info from name");
+        //res.sendStatus(203).json(req.user);
+        client.hgetall(req.user.name, function(error, reply) {
+          if (error) {
+            console.log("Unable to retrieve coach's available times : " + error);
+          }
+          else {
+            console.log("Coach information : " + JSON.stringify(reply));
+            res.json(reply);
+          }
+        });
       }
     }
-  });
+    });
   }
 });
 
@@ -160,7 +180,7 @@ app.post('/coach', function(req, res) {
   req.user.role = 'coach';
   req.user.since = new Date().toDateString();
   //client.hmset(req.user.email, "name", req.user.name, "email", req.user.email, "role", req.user.role, "since", req.user.since, function(err, res) {
-  client.hmset(req.user.name, "name", req.user.name, "email", req.user.email, "role", req.user.role, "since", req.user.since, function(err, res) {
+  client.hmset(req.user.name, "name", req.user.name, "email", req.user.email, "role", req.user.role, "since", req.user.since, function(err, response) {
     if (!err) {
      console.log("Saved user " + req.user.name + " to database as " + req.user.role);
      res.redirect('/coach');
@@ -198,7 +218,27 @@ app.post('/student', function(req, res) {
 });
 
 app.get('/coach', function(req, res) {
-  res.render('coach');
+  if (req.user.role !== 'coach') {
+    client.hget(req.user.name, 'role', function(err, rep) {
+      if (err) {
+        console.log("Unable to look up name of user making request in REDIS : " + err);
+      }
+      else {
+        if (rep === 'coach') {
+          console.log("The user has previously registered as a coach. Allowing access to coach page.");
+          //res.sendStatus(200).end();
+          res.render('coach');
+        }
+        else {
+          console.log('Attempt for Unauthorized Access of Coach Page detected');
+          res.redirect('/');
+        }
+      }
+    });
+  }
+  else {
+    res.render('coach');
+  }
 });
 
 app.get('/student', function(req, res) {
@@ -249,16 +289,69 @@ app.get('/coachInfo/:name', function(req, res) {
   res.set('application/json');
   var name = req.params.name;
   console.log("Trying to retrieve info for coach " + name + " for student " + req.user.name);
-  client.hget(name, 'info', function(error, reply) {
+  //client.hget(name, 'info', function(error, reply) {
+  client.hgetall(name, function(error, reply) {
     if (error) {
       console.log("Unable to retrieve coach's available times : " + error);
     }
     else {
-      console.log("Coach is free at " + JSON.stringify(reply));
+      console.log("Coach information : " + JSON.stringify(reply));
       res.json(reply);
     }
   });
 });
+
+app.post('/appointments/:name', function(req, res) {
+  //res.set('text/plain');
+  var name = req.params.name;
+  var reqObj = req.body;
+  console.log("Received appointment request for coach " + name + " from student " + reqObj.user.name);
+  client.hget(name, 'appointments', function(err, reply) {
+    if (err) {
+      console.log("Error retrieving coach's appointment list : " + err);
+    }
+    else {
+      res.sendStatus(200);
+      var newList;// = [];
+      if (reply === undefined || reply === null) {
+        newList = [];
+      }
+      else if (typeof(reply) === "string") {
+        newList = [];
+        console.log("Reply is truthy and it is " + reply);
+        newList.push(reply);
+      }
+      else if (typeof(reply) === "object") {
+        newList = reply;
+      }
+      newList.push(JSON.stringify(reqObj));
+      client.hmset(name, 'appointments', newList, function(error, response) {
+        if (error) {
+          console.log("Unable to save new appointment into tutor's list of appointments: " + error);
+        }
+        else {
+          console.log("Saved appointment into tutor's records");
+        }
+      });
+    }
+  });
+});
+
+/***
+app.get('/appointments/:name', function(req, res) {
+  res.set('application/json');
+  var name = req.params.name;
+  client.hget(name, appointments, function(err, reply) {
+    if (err) {
+      console.log("Error retrieving coach's appointment list : " + err);
+    }
+    else {
+      console.log("Sending reply of " + JSON.stringify(reply) + " to client");
+      res.json(reply);
+    }
+  });
+});
+***/
 /*** KIV - Needs form upload
 app.get('/profile', function(req, res) {
 

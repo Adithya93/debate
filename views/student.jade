@@ -36,7 +36,7 @@ html(lang="en" data-ng-app="DebateCoaching")
 
     div.info(ng-hide="user.info")
       h3 Tell Us More About Yourself!
-      form(name="studentInfo", ng-submit="update(student)")
+      form(name="studentInfo", ng-submit="updateStudent(student)")
         .row
           .col-xs-10
             label(for="Experience") Years of Experience
@@ -44,23 +44,23 @@ html(lang="en" data-ng-app="DebateCoaching")
         .row
           .col-xs-10
             label(for="Available Days") Preferred Tutoring Days
-            select.form-control(multiple="", required, ng-model="student.Available_Days", ng-options="d for d in days")
+            select.form-control(multiple="", ng-model="student['Available_Days']", ng-options="d[1] for d in days")
         .row
           .col-xs-10
             label(for="Available Times") Preferred Timings
-            select.form-control(multiple="", required, ng-model="student.Available_Times", ng-options="t for t in times")
-        .row <b>Preferred Tutoring Days</b>
-          div.linebreak
+            select.form-control(multiple="", ng-model="student['Available_Times']", ng-options="t for t in times")
+        .row <b>Preferred Tutoring Days (User-Friendly Version)</b>
+          <br/>
           span.form-inline(ng-repeat="d in days")
             span.checkbox
-              label-inline(for="booyakasha") {{d}}
-                input.checkbox(type="checkbox", value="", required, ng-model="student.booyakasha")
-        .row <b>Preferred Timings</b>
-          div.linebreak
+              label-inline(for="Available Days") {{d[1]}}
+                input.checkbox(type="checkbox", value="", ng-model="hisDays[d[0]]")
+        .row <b>Preferred Timings (User-Friendly Version)</b>
+          <br/>
           span.form-inline(ng-repeat="t in times")
             span.checkbox
-              label-inline(for="yakshemesh") {{t}}
-                input.checkbox(type="checkbox", value="", required, ng-model="student.yakshemesh")
+              label-inline(for="Available Times") {{t}}
+                input.checkbox(type="checkbox", value="", ng-model="hisTimes[times.indexOf(t)]")
         .row
           .col-xs-10
             label(for="Preferred Tutor") Preferred Tutor

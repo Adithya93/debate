@@ -16,16 +16,32 @@ html(lang="en" data-ng-app="DebateCoaching")
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
 
   body.container-fluid(ng-controller="BookingsController")
-    h2 Your Coach : {{tutor}}!
-    div.coachTimes(ng-show="slots.length")
-      p His Available Times
-      ul#available_Times(ng-repeat="s in slots")
-        li {{s}}
-    div.background(ng-show="tutorObj.background")
-      p His Debating Background
-      ul#coachRecord(ng-repeat="r in tutorObj.record")
-        li {{r}}
-    div.temp(ng-hide="tutorObj.background")
-      p Your Coach hasn't uploaded any records (Maybe he is actually a NOOB... :O)
-
+    div.studentView(ng-show="user.role === 'student'")
+      h2 Your Coach : {{tutor}}!
+      div.coachTimes(ng-show="slots.length")
+        p His Available Times
+        ul#available_Times(ng-repeat="s in slots")
+          li <a class="appointments" href="" ng-click="makeReq(tutor, s)">{{s}}</a>
+      div.background(ng-show="tutorObj.background")
+        p His Debating Background
+        ul#coachRecord(ng-repeat="r in tutorObj.record")
+          li {{r}}
+      div.temp(ng-hide="tutorObj.background")
+        p Your Coach hasn't uploaded any records (Maybe he is actually a NOOB... :O)
+    div.coachView(ng-show="user.role === 'coach'")
+      h2 Debate Coach - {{user.name}}
+      div.appointments
+        p You are in demand! These are your upcoming appointments :
+        table.appointments(ng-show="user.appointments && user.appointments.length")
+          thead
+            tr
+              th Date
+              th Time
+              th Student
+              th Status
+          tr(ng-repeat="app in user.appointments")
+            td app.date
+            td app.time
+            td app.student
+            td app.status
 

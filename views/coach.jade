@@ -6,6 +6,7 @@ html(lang="en" data-ng-app="DebateCoaching")
     meta(name="viewport", content="width=device-width, initial-scale=1")
     link(rel="stylesheet", href="css/normalize.css")
     link(rel="stylesheet", href="css/skeleton.css")
+    link(rel="stylesheet", href="css/custom.css")
     link(rel="stylesheet", href="//fonts.googleapis.com/css?family=Raleway:400,300,600")
     link(rel="icon" type="image/png" href="favicon.png")
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
@@ -26,6 +27,42 @@ html(lang="en" data-ng-app="DebateCoaching")
           td train.date
           td train.duration
       div.prompt(ng-hide="user.trainings")
-        p You don't have any training sessions lined up..
+        p You haven't had any training sessions recently ...
         p
-          a.appointments(href="/bookings") Spruce up my profile!
+          a.profileEdit(href="/profile") Spruce up my profile!
+        p
+          a.bookings(href="/bookings") Check out my upcoming appointments!
+    div.info(ng-hide="user.info")
+      h3 Tell Us More About Yourself!
+      form(name="coachInfo", ng-submit="updateCoach(coach)")
+        .row
+          .col-xs-10
+            label(for="Experience") Years of Experience
+            input.form-control(required, type='number', ng-model="student.Experience")
+        .row
+          .col-xs-10
+            label(for="Available Days") Preferred Tutoring Days
+            select.form-control(multiple="", ng-model="coach['Available_Days']", ng-options="d[1] for d in days")
+        .row
+          .col-xs-10
+            label(for="Available Times") Preferred Timings
+            select.form-control(multiple="", ng-model="coach['Available_Times']", ng-options="t for t in times")
+        .row <b>Preferred Tutoring Days (User-Friendly Version)</b>
+          <br/>
+          span.form-inline(ng-repeat="d in days")
+            span.checkbox
+              label-inline(for="Available Days") {{d[1]}}
+                input.checkbox(type="checkbox", value="", ng-model="hisDays[d[0]]")
+        .row <b>Preferred Timings (User-Friendly Version)</b>
+          <br/>
+          span.form-inline(ng-repeat="t in times")
+            span.checkbox
+              label-inline(for="Available Times") {{t}}
+                input.checkbox(type="checkbox", value="", ng-model="hisTimes[times.indexOf(t)]")
+        .row
+          .col-xs-10
+            label(for="Maximum Students") Maximum Students
+            select.form-control(required, ng-model="coach['Maximum_Students']", ng-options="t for t in tutors")
+          .col-xs-2
+            button.btn.btn-success Begin My Debate Coaching Adventure!
+              i.glyphicon.glyphicon-plus
