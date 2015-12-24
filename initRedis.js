@@ -28,16 +28,33 @@ client.del('booyakashabandit@gmail.com', function(err, res) {
 	}
 });
 
+client.del('Raghu Nathan', function(err, res) {
+	if (err) {
+		console.log('Unable to delete: ' + err);
+	}
+	else {
+		console.log(res);
+	}
+});
 
-austinInfo = JSON.stringify({"Available_Times": "7 pm;10 pm", "Experience" : "10 Years"});
+client.del('', function(err, res) {
+	if (err) {
+		console.log('Unable to delete : ' + err);
+	}
+	else {
+		console.log(res);
+	}
+})
+
+
+austinInfo = JSON.stringify({"Available_Times" : "7 pm;10 pm", "Available_Days" : "Monday;Wednesday;Thursday", "Experience" : "10 Years"});
 console.log("Saving Austin's info as " + austinInfo);
-client.hmset('Austin Lee', "name", "Austin Lee", "email", "yu.chuan.lee@duke.edu", "role", "coach", "since", new Date().toDateString(), "info", austinInfo, function(err, res) {
+client.hmset('Austin Lee', "name", "Austin Lee", "email", "ra102@duke.edu", "role", "coach", "since", new Date().toDateString(), "info", austinInfo, function(err, res) {
 	if (err) {
 		console.log("Unable to seed database with coach Austin");
 	}
 	else {
 		client.hget('Austin Lee', "info", function(error, rep) {
-		//client.hgetall('Austin Lee', function(error, rep) {
 			if (error) {
 				console.log("Unable to retrieve Austin's info : " + error);
 			}
@@ -53,8 +70,10 @@ client.llen('tutors', function(err, res) {
 	}
 	else {
 		console.log("Current length of tutors list is " + res);
-		if (parseInt(res)  === 0) {
-			client.lpush('tutors', 'Austin Lee', function(error, rep) {
+		//if (parseInt(res)  === 0) {
+		if (parseInt(res) < 2) {
+		//	client.lpush('tutors', 'Austin Lee', function(error, rep) {
+			client.lpush('tutors', 'Ian Tay Yi Yan', function(error, rep) {
 				if (error) {
 					console.log("Unable to add tutor to list : " + error);
 				}
@@ -63,7 +82,7 @@ client.llen('tutors', function(err, res) {
 				}
 			});
 		}
-		else if (parseInt(res) > 1) {
+		else if (parseInt(res) > 2) {
 			client.rpop('tutors', function(error, rep) {
 				if (error) {
 					console.log("Unable to remove earliest remaining tutor : " + error);
@@ -82,19 +101,6 @@ client.llen('students', function(err, res) {
 	}
 	else {
 		console.log("Current length of students list is " + res);
-		/***
-		if (parseInt(res)  === 0) {
-			client.lpush('students', 'Raghu Nathan', function(error, rep) {
-				if (error) {
-					console.log("Unable to add tutor to list : " + error);
-				}
-				else {
-					console.log("Added tutor, length is now " + rep);
-				}
-			});
-		}
-		***/
-		//else if (parseInt(res) > 1) {
 		if (parseInt(res) > 0) {
 			client.rpop('students', function(error, rep) {
 				if (error) {

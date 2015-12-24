@@ -24,14 +24,19 @@ angular.module("DebateCoaching")
 						if (status2 === 200) {
 							$scope.tutorObj = data2;
 							var info = common.str2Obj(data2.info);
-							$scope.slots = info['Available_Times'].split(";");
-							console.log("Coach's available times retrieved on user side as " + JSON.stringify($scope.slots));
+							//$scope.slots = info['Available_Times'].split(";");
+							var times = info['Available_Times'].split(";");
+							var days = info['Available_Days'].split(";");
+							$scope.slots = makeSlots(days, times);
+							//console.log("Coach's available times retrieved on user side as " + JSON.stringify($scope.slots));
+							console.log("Coach's available slots interpreted as " + JSON.stringify($scope.slots));
 						}
 						else {
 							console.log("Unable to retrieve coach slots");
 						}
 					});
 				}
+
 			}
 		
 			else if (status == 201) {
@@ -53,18 +58,44 @@ angular.module("DebateCoaching")
 
 	$scope.makeReq = makeReq;
 
-	function makeReq(tutor, time){
+
+	function makeSlots(days, times) {
+		var slots = [];
+		for (var day = 0; day < days.length; day ++) {
+			for (var time = 0; time < times.length; time ++) {
+				slots.push([days[day], times[time]]);
+			}
+		}
+		return slots;
+	}
+
+	// Called if user is a student - Adds appointment to tutor's list with PENDING status & sends him email notification
+	function makeReq(tutor, day, time) {
 		var reqObj = {};
-		reqObj.user = $scope.user;
+		reqObj.studentName = $scope.user.name;
+		reqObj.studentEmail = $scope.user.email;
 		reqObj.time = time;
+		reqObj.day = day;
 		reqObj.status = "Pending";
 		$http.post('/appointments/' + tutor, reqObj)
 		.success(function(data, headers, status, config) {
-			console.log("Successfully posted request to server for appointment between " + reqObj.user.name + " and " + tutor + " at time of " + reqObj.time);
+			console.log("Successfully posted request to server for appointment between " + reqObj.name + " and " + tutor + " at time of " + reqObj.time);
 		//	return true;
 		});
 		//return false;
 	}
+
+	// Called if user is a tutor - Changes appointment status to CONFIRMED or DECLINED & sends student email notification
+	function confirmReq(studentName, studentEmail, day, time, status) {
+		var info = {'studentName' : studentName, 'studentEmail' : studentEmail, 'day' : day, 'time' : time, 'status' : status};
+		$http.post('/confirmations/' + $scope.user.name, info)
+		.success(function(data, headers, status, config) {
+			console.log("Successfully posted request to server for tutor " + $scope.user.name + " for " + status + " appointment at " + day + ", " + time
+			 + " with student " + studentName);
+		});
+	}
+
+
 
 	function getAppointments(tutor) {
 		$http.get('/appointments/' + tutor)

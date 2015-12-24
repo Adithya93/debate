@@ -59,3 +59,31 @@ client.hgetall('raghu.singapore@gmail.com', function(err, res) {
 		console.log(res);
 	}
 });
+
+// Check list of tutors
+client.lrange('tutors', 0, -1, function(err, res){
+	if (err) {
+		console.log("Error trying to retrieve all tutors from REDIS : " + err);
+	}
+	else {
+		console.log("Tutor's list is " + JSON.stringify(res));
+		client.llen('tutors', function(error, rep) {
+			if(error) {
+				console.log("Unable to retrieve length of tutor list : " + error);
+			}
+			else {
+				console.log("Length of tutor list is " + rep);
+			}
+		})
+	}
+});
+
+// Check list of students
+client.lrange('students', 0, -1, function(err, res){
+	if (err) {
+		console.log("Error trying to retrieve all students from REDIS : " + err);
+	}
+	else {
+		console.log("Student's list is " + JSON.stringify(res));
+	}
+});

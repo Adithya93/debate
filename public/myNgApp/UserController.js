@@ -111,8 +111,6 @@ angular.module("DebateCoaching", [])
 		function parseForm(object){
 			console.log("Information posted through form: " + JSON.stringify(object) + "\n" + JSON.stringify($scope.hisDays) + "\n" + JSON.stringify($scope.hisTimes));
 			// Convert number to string to facilitate parsing of JSON string into object in future
-			//console.log("Setting tutor to " + object["Preferred_Tutor"]);
-			//common.setTutor(object["Preferred_Tutor"]);
 			if (object["Experience"] == 1) {
 				object["Experience"] = object["Experience"] + " Year";
 			}
@@ -163,9 +161,6 @@ angular.module("DebateCoaching", [])
 				console.log("Successfully passed new coach information to server");
 			}); 
 		};
-
-
-
 
 	});
 

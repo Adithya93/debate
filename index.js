@@ -13,8 +13,7 @@ var bodyParser = require('body-parser');
 var moment = require('moment');
 var redis = require('redis');
 
-
-//console.log(process.env.NODE_ENV);
+var sendgrid = require('sendgrid')(process.env.SENDGRID_API_KEY);
 
 app.listen(process.env.PORT || 3000, function() {
   console.log("Here we go!");
@@ -31,7 +30,6 @@ if (process.env.NODE_ENV == "dev"){
   );
 }
 else {
-//	console.log("Not in development mode");
   app.use(session({
       secret: process.env.SESSION_SECRET
   }));
@@ -68,21 +66,8 @@ client.on('connect', function() {
 
 app.get('/', function(req, res) {
 
-	//res.set('text/html');
-	//res.write("Booyakasha Bounty!");
   res.render('index');
-	//res.end();
 });
-
-/***
-app.post('/oldUser', function(req, res) {
-	//res.set('text/plain');
-	//res.write('Alright, hang in there!');
-	//res.end();
-	//console.log('Someone tried to join!');
-
-});
-***/
 
 app.get('/newUser', function(req, res) {
   res.render('newUser');
@@ -147,14 +132,18 @@ app.get('/userInfo', function(req, res) {
       }
       else {
         console.log("No key stored in REDIS for this email, user might be coach. Trying to retrieve info from name");
-        //res.sendStatus(203).json(req.user);
         client.hgetall(req.user.name, function(error, reply) {
           if (error) {
             console.log("Unable to retrieve coach's available times : " + error);
           }
           else {
-            console.log("Coach information : " + JSON.stringify(reply));
-            res.json(reply);
+            if (reply !== null && reply !== undefined) {
+              console.log("Coach information : " + JSON.stringify(reply));
+              res.json(reply);
+            }
+            else {
+              res.json(req.user);
+            }
           }
         });
       }
@@ -179,7 +168,6 @@ app.get('/tutors', function(req, res) {
 app.post('/coach', function(req, res) {
   req.user.role = 'coach';
   req.user.since = new Date().toDateString();
-  //client.hmset(req.user.email, "name", req.user.name, "email", req.user.email, "role", req.user.role, "since", req.user.since, function(err, res) {
   client.hmset(req.user.name, "name", req.user.name, "email", req.user.email, "role", req.user.role, "since", req.user.since, function(err, response) {
     if (!err) {
      console.log("Saved user " + req.user.name + " to database as " + req.user.role);
@@ -194,7 +182,6 @@ app.post('/coach', function(req, res) {
      }); 
     }
   });
-  //res.redirect('/coach');
 });
 
 app.post('/student', function(req, res) {
@@ -214,7 +201,6 @@ app.post('/student', function(req, res) {
      }); 
     }
   });
-  //res.redirect('/student');
 });
 
 app.get('/coach', function(req, res) {
@@ -226,7 +212,6 @@ app.get('/coach', function(req, res) {
       else {
         if (rep === 'coach') {
           console.log("The user has previously registered as a coach. Allowing access to coach page.");
-          //res.sendStatus(200).end();
           res.render('coach');
         }
         else {
@@ -257,13 +242,11 @@ app.post('/student/info', function(req, res) {
       res.redirect('/student');
     }
   });
-//  res.redirect('/student');
 });
 
 app.post('/coach/info', function(req, res) {
   var info = JSON.stringify(req.body);
   console.log("Received the following info from new coach " + info);
-  //client.hmset(req.user.email, 'info', info, function(error, response) {
   client.hmset(req.user.name, 'info', info, function(error, response) {
     if (error) {
       console.log("Unable to save user info");
@@ -273,7 +256,6 @@ app.post('/coach/info', function(req, res) {
       res.redirect('/coach');
     }
   });
-//  res.redirect('/coach');
 });
 
 app.get('/bookings', function(req, res) {
@@ -289,7 +271,6 @@ app.get('/coachInfo/:name', function(req, res) {
   res.set('application/json');
   var name = req.params.name;
   console.log("Trying to retrieve info for coach " + name + " for student " + req.user.name);
-  //client.hget(name, 'info', function(error, reply) {
   client.hgetall(name, function(error, reply) {
     if (error) {
       console.log("Unable to retrieve coach's available times : " + error);
@@ -302,10 +283,9 @@ app.get('/coachInfo/:name', function(req, res) {
 });
 
 app.post('/appointments/:name', function(req, res) {
-  //res.set('text/plain');
   var name = req.params.name;
   var reqObj = req.body;
-  console.log("Received appointment request for coach " + name + " from student " + reqObj.user.name);
+  console.log("Received appointment request for coach " + name + " from student " + reqObj.studentName);
   client.hget(name, 'appointments', function(err, reply) {
     if (err) {
       console.log("Error retrieving coach's appointment list : " + err);
@@ -330,11 +310,79 @@ app.post('/appointments/:name', function(req, res) {
           console.log("Unable to save new appointment into tutor's list of appointments: " + error);
         }
         else {
-          console.log("Saved appointment into tutor's records");
+          console.log("Saved appointment into tutor's records. Now saving to student's records");
+          client.hget(req.user.email, 'trainings', function(Error, List) {
+            if (Error) {
+              console.log("Unable to retrieve trainings list of " + req.user.name + " : " + Error);
+            }
+            else {
+              var trainingList;
+              if (List === undefined || List === null) {
+                trainingList = [];
+              }
+              else if (typeof(List) === "string") {
+                trainingList.push(List);
+              }
+              else if (typeof(List) === "object") {
+                trainingList = List;
+              }
+              trainingList.push(JSON.stringify({'coach' : name, 'day' : reqObj['day'], 'time' : reqObj['time'], 'status' : 'Pending'}));
+              client.hmset(req.user.email, 'trainings', trainingList, function(e, r) {
+                if (e) {
+                  console.log("Unable to reflect booking request in database for user " + req.user.name + " : " + e);
+                }
+                else {
+                  console.log("Saved request successfully in database for user " + req.user.name);
+                }
+              });
+              client.hget(name, 'email', function(e1, r1) {
+                if (e1) {
+                  console.log("Unable to retrieve email of coach : " + e1);
+                }
+                else {
+                  if (notifyTutor(req.params.name, r1, reqObj)) {
+                    console.log("Successfully e-mailed tutor");
+                  }
+                  else {
+                    //console.log("Unable to e-mail tutor"); // Always prints this because of asynchronous callback, misleading 
+                    console.log("Awaiting response from SendGrid");
+                  }
+                }
+              });
+            }
+          });
         }
       });
     }
   });
+});
+
+app.post('/confirmations/:name', function(req, res) {
+  var name = req.params.name;
+  var booking = req.body;
+  var status = booking['status'];
+  if (status !== 'confirm' || status !== 'decline') {
+    console.log("Unknown request from client, ignoring");
+    res.sendStatus(401);
+  }
+  var success = false;
+  console.log("About to call updateCoachBookings method");
+  if (updateCoachBookings(name, booking, status)) {
+    console.log("Successfully updated coach. About to update student");
+    if (handleStudentBookings(name, booking, status)) { // Update status in coach's and user's appointment list
+      console.log("Succesfully updated student confirmation");
+      success = true;
+    }
+  }
+  if (success) {
+    res.sendStatus(200);
+    if (notifyStudent(req.params.name, req.params.email, booking)) {
+      console.log("Successfully e-mailed student");
+    }
+  }
+  else {
+    res.sendStatus(404);
+  }
 });
 
 /***
@@ -357,4 +405,208 @@ app.get('/profile', function(req, res) {
 
 
 });
+***/
+function str2Obj(str) {
+      var obj = {};
+      var fields = str.slice(1,-1).split(",");
+      var pairs = fields.map(function(val, pos) {
+        return val.split(":");
+      });
+      pairs.forEach(function(x) {
+        obj[x[0].slice(1, -1)] = x[1].slice(1, -1); 
+        });
+      return obj;
+      }
+
+function findBooking(value, booking) {
+  var storedObj = str2Obj(value);
+  //return storedObj['studentName'] === booking['studentName'] && storedObj['day'] === booking['day'] && storedObj['time'] === booking['time'];
+  return storedObj['day'] === booking['day'] && storedObj['time'] === booking['time'];
+}
+
+function updateCoachBookings(coachName, booking, status) {
+  client.hget(coachName, 'appointments', function(err, rep) {
+    if (err) {
+      console.log("Error retrieving appointment list for confirmation : " + err);
+    }
+    else {
+      var list = rep;
+      var foundIndex = list.findIndex(function(val) {
+        return findBooking(val, booking);
+      });
+      var found = list[foundIndex];
+      if ('status' === 'confirm') {
+        found['status'] = status;
+        list[foundIndex] = found;
+      }
+      else {
+        list.splice(foundIndex);
+      }
+      client.hmset(coachName, 'appointments', list, function(error, reply) {
+        if (error) {
+         console.log("Unable to save updated appointments list : " + err);
+         return false;
+        }
+        else {
+          console.log("Successfully updated list. Now updating student's database");
+          return true;
+        }
+      });
+    }
+  });
+}
+
+function handleStudentBookings(coachName, booking, status) {
+  client.hget(booking.studentEmail, 'trainings', function(Error, List) {
+    if (Error) {
+      console.log("Problem retrieving trainings list of user : " + Error);
+      return false;
+    }
+    else {
+      var trainingList;
+      if (List === undefined || List === null) {
+        trainingList = [];
+        trainingList.push(JSON.stringify({'coach' : name, 'day' : booking['day'], 'time' : booking['time'], 'status' : status}));
+      }
+      else if (typeof(List) === 'string') {
+        console.log("Checking return from REDIS for student's list of training sessions : " + List);
+        trainingList = [];
+        var bookingObj = str2Obj(List);
+        bookingObj['status'] = status;
+        trainingList.push(bookingObj);
+      }
+      else if (typeof(List) === 'object') {
+        console.log("List returned from REDIS is of type object, may already be list");
+        trainingList = List;
+        var foundBookingIndex = trainingList.findIndex(function(val) {
+          return findBooking(val, booking);
+        });
+        var foundBooking = trainingList[foundBookingIndex];
+        foundBooking['status'] = status;
+        trainingList[foundBookingIndex] = foundBooking;
+        client.hmset(booking.studentEmail, 'trainings', trainingList, function(e, r) {
+          if (e) {
+            console.log("Unable to update status of student's appointment : " + e);
+            return false;
+          }
+          else {
+            console.log("Successfully updated student's appointment list");
+            return true;
+          }
+        });
+      }
+    }
+  });
+}
+
+
+function notifyStudent(coachName, coachEmail, booking) {
+  var email = new sendgrid.Email();
+  email.from = 'DebateCoaching@noreply.com';
+  email.to = booking.studentEmail;
+  var fields = booking.status === 'confirmed' ? 
+  {'subject' : 'Debate Coaching - Confirmation of Appointment', 'header' : 'Congratulations', 'message' : 'Your appointment has been confirmed'} : 
+  {'subject' : 'Debate Coaching - Appointment Declined', 'header' : 'Sorry', 'message' : 'Your appointment has been declined'}; 
+  //email.subject = status === 'confirmed' ? 'Debate Coaching - Confirmation of Appointment' : 'Debate Coaching - Appointment Declined';
+  email.subject = fields.subject;
+  email.addFile({
+    cid : 'site_logo',
+    path: './public/site_logo.png'
+  });
+  var html = "<html><head><h1>" + fields.header + " " + coachName + " !</h1>"
+  + "<link rel = 'stylesheet' href = './public/css/custom.css' type = 'text/css'></link>" + "<div#siteLogo><img src = 'cid:site_logo'></img></div></head>"
+  + "<body><div>" + fields.message + "</div><div#info><p>Name of coach : " + coachName + " </p><p>Email : " + coachEmail + " </p>"
+  + "<p>Day & Time : " + booking.day + ", " + booking.time + " </p>"
+  + "</div></body></html>";
+  email.setHtml(html);
+  sendgrid.send(email, function(err, json) {
+    if (err) {
+      console.log("Unable to send email to " + coachName + " : " + err);
+    }
+    else {
+      console.log(JSON.stringify(json));
+      return true;
+    }
+  });
+}
+
+
+
+function notifyTutor(coachName, coachEmail, booking) {
+  //var studentEmail = booking.studentEmail;
+  //var studentName = booking.studentName;
+  var email = new sendgrid.Email();
+  email.from = 'DebateCoaching@noreply.com';
+  email.to = coachEmail;
+  email.subject = 'Debate Coaching - Appointment Request';
+//  email.addFile({
+//    cid : 'style',
+//    path : './public/css/custom.css'
+//  });
+  email.addFile({
+    cid : 'site_logo',
+    path : './public/site_logo.png'
+  });
+  var html = "<html><head><h1>Congratulations " + coachName + " !</h1>"
+//  + "<link rel = 'stylesheet' href = 'cid:style' type = 'text/css'></link>" + "<div#siteLogo><img src = 'cid:site_logo'></img></div></head>" // css injection doesn't work
+  + "<link rel = 'stylesheet' href = './public/css/custom.css' type = 'text/css'></link>" + "<div#siteLogo><img src = 'cid:site_logo'></img></div></head>"
+  + "<body><div>You have an appointment request!</div><div#info><p>Name of student : " + booking.studentName + " </p><p>Email : " + booking.studentEmail + " </p>"
+  + "<p>Day & Time : " + booking.day + ", " + booking.time + " </p>"
+  + "</div></body></html>";
+  email.setHtml(html);
+  sendgrid.send(email, function(err, json) {
+    if (err) {
+      console.log("Unable to send email to " + coachName + " : " + err);
+    }
+    else {
+      console.log(JSON.stringify(json));
+      return true;
+    }
+  });
+}
+
+
+/***
+function handleStudentRejection(coachName, booking) {
+  client.hget(booking.studentEmail, 'trainings', function(Error, List) {
+    if (Error) {
+      console.log("Problem retrieving trainings list of user : " + Error);
+      return false;
+    }
+    else {
+      var trainingList;
+      if (List === undefined || List === null) {
+        trainingList = [];
+        trainingList.push(JSON.stringify({'coach' : name, 'day' : booking['day'], 'time' : booking['time'], 'status' : 'Confirmed'}));
+      }
+      else if (typeof(List) === 'string') {
+        console.log("Checking return from REDIS for student's list of training sessions : " + List);
+        trainingList = [];
+        var bookingObj = str2Obj(List);
+        bookingObj['status'] = 'Confirmed';
+        trainingList.push(bookingObj);
+      }
+      else if (typeof(List) === 'object') {
+        console.log("List returned from REDIS is of type object, may already be list");
+        trainingList = List;
+        var foundBookingIndex = trainingList.findIndex(function(val) {
+          return findBooking(val, booking);
+        });
+        var foundBooking = trainingList[foundBookingIndex];
+        foundBooking['status'] = 'Confirmed';
+        trainingList[foundBookingIndex] = foundBooking;
+        client.hmset(booking.studentEmail, 'trainings', trainingList, function(e, r) {
+          if (e) {
+            console.log("Unable to update confirmed status of student's appointment : " + e);
+            return false;
+          }
+          else {
+            console.log("Successfully updated student's appointment list");
+            return true;
+          }
+        });
+      }
+    }
+  });
+}
 ***/

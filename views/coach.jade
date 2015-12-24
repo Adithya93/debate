@@ -32,6 +32,7 @@ html(lang="en" data-ng-app="DebateCoaching")
           a.profileEdit(href="/profile") Spruce up my profile!
         p
           a.bookings(href="/bookings") Check out my upcoming appointments!
+    
     div.info(ng-hide="user.info")
       h3 Tell Us More About Yourself!
       form(name="coachInfo", ng-submit="updateCoach(coach)")
