@@ -65,7 +65,6 @@ client.on('connect', function() {
 
 
 app.get('/', function(req, res) {
-
   res.render('index');
 });
 
@@ -316,14 +315,14 @@ app.post('/appointments/:name', function(req, res) {
               console.log("Unable to retrieve trainings list of " + req.user.name + " : " + Error);
             }
             else {
-              var trainingList;
-              if (List === undefined || List === null) {
-                trainingList = [];
-              }
-              else if (typeof(List) === "string") {
+              var trainingList = [];
+              //if (List === undefined || List === null) {
+              //  trainingList = [];
+              //}
+              if (typeof(List) === "string") {
                 trainingList.push(List);
               }
-              else if (typeof(List) === "object") {
+              else if (typeof(List) === "object" && List !== null && List !== undefined) {
                 trainingList = List;
               }
               trainingList.push(JSON.stringify({'coach' : name, 'day' : reqObj['day'], 'time' : reqObj['time'], 'status' : 'Pending'}));
@@ -385,27 +384,11 @@ app.post('/confirmations/:name', function(req, res) {
   }
 });
 
-/***
-app.get('/appointments/:name', function(req, res) {
-  res.set('application/json');
-  var name = req.params.name;
-  client.hget(name, appointments, function(err, reply) {
-    if (err) {
-      console.log("Error retrieving coach's appointment list : " + err);
-    }
-    else {
-      console.log("Sending reply of " + JSON.stringify(reply) + " to client");
-      res.json(reply);
-    }
-  });
-});
-***/
 /*** KIV - Needs form upload
 app.get('/profile', function(req, res) {
-
-
 });
 ***/
+
 function str2Obj(str) {
       var obj = {};
       var fields = str.slice(1,-1).split(",");

@@ -71,7 +71,7 @@ angular.module("DebateCoaching", [])
 
 	$http.get('/userInfo')
 		.success(function(data, status, header, config) {
-			if (status === 200){
+			if (status === 200) {
 				$scope.user = data;
 				if ($scope.user && $scope.user.info) {
 					console.log("User has info, detected on client side");
@@ -80,6 +80,24 @@ angular.module("DebateCoaching", [])
 				console.log("Received the following user data:\n");
 				console.log($scope.user);
 				$scope.format = common.format;
+
+				console.log("User's trainings are of data type " + typeof($scope.user.trainings));
+
+				//if (typeof($scoper.user.trainings) === '') {
+				if ($scope.user.trainings.substring(0, 1) === "{") { // Only single training session, thus convert it into an object and put it into a list
+					var trainList = [];
+					$scope.user.trainings = common.str2Obj($scope.user.trainings);
+					trainList.push($scope.user.trainings);
+					$scope.user.trainings = trainList;
+					console.log("User's Trainings are now a single-element list: ");
+					console.log($scope.user.trainings);
+				}
+				else if (typeof ($scope.user.trainings === 'object')) { // List of training session strings, each has to be converted into object
+					console.log("List of training sessions detected");
+					$scope.user.trainings = $scope.user.trainings.map(function(val, pos) {
+						return common.str2Obj(val);
+					});
+				}
 		}
 
 		else if (status == 201) {

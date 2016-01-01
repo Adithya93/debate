@@ -17,21 +17,24 @@ html(lang="en" data-ng-app="DebateCoaching")
   body.container-fluid(ng-controller="UserController")
     h2 Welcome {{user.name}}!
     div.profile(ng-show="user.info")
-      p Student since {{user.since}}
+      p#since Student since {{user.since}}
       ul.info(ng-repeat= "key in user.info")
         li <b>{{format(key[0]).toUpperCase()}}</b> : {{format(key[1])}}
+    span.profile(ng-show="user.info")  
       table.history(ng-show="user.trainings")
+        p These are your upcoming training sessions...
         thead
           tr
-            th Date
-            th Duration
+            th Day
+            th Time
+            th Status
         tr(ng-repeat= "train in user.trainings")
-          td train.date
-          td train.duration
+          td {{train.day}}
+          td {{train.time}}
+          td {{train.status}}
       div.prompt(ng-hide="user.trainings")
         p You don't have any training sessions lined up...
-        p
-          a.appointments(href="/bookings") Book an appointment with my preferred tutor!
+        a#bookAppointments(href="/bookings") Book an appointment with my preferred tutor!
 
 
     div.info(ng-hide="user.info")
@@ -68,3 +71,8 @@ html(lang="en" data-ng-app="DebateCoaching")
           .col-xs-2
             button.btn.btn-success Begin My Debate Adventure!
               i.glyphicon.glyphicon-plus
+    span.contentHolder
+      p#currentAffairs Brush up on your current affairs!
+      span#content
+        script(src='js/NewsFeed.js')
+
