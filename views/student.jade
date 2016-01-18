@@ -44,21 +44,13 @@ html(lang="en" data-ng-app="DebateCoaching")
           .col-xs-10
             label(for="Experience") Years of Experience
             input.form-control(required, type='number', ng-model="student.Experience")
-        .row
-          .col-xs-10
-            label(for="Available Days") Preferred Tutoring Days
-            select.form-control(multiple="", ng-model="student['Available_Days']", ng-options="d[1] for d in days")
-        .row
-          .col-xs-10
-            label(for="Available Times") Preferred Timings
-            select.form-control(multiple="", ng-model="student['Available_Times']", ng-options="t for t in times")
-        .row <b>Preferred Tutoring Days (User-Friendly Version)</b>
+        .row <b>Preferred Tutoring Days</b>
           <br/>
           span.form-inline(ng-repeat="d in days")
             span.checkbox
               label-inline(for="Available Days") {{d[1]}}
                 input.checkbox(type="checkbox", value="", ng-model="hisDays[d[0]]")
-        .row <b>Preferred Timings (User-Friendly Version)</b>
+        .row <b>Preferred Timings</b>
           <br/>
           span.form-inline(ng-repeat="t in times")
             span.checkbox

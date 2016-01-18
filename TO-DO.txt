@@ -1,0 +1,6 @@
++ Add Form Upload Feature for students and tutors (coach.jade and student.jade)
++ Remove 'Choose Tutor' button from new user page
++ Add conditional link to home page of user (student.jade) which displays only if student has not selected tutor
++ Make the website look less ugly (Bootstrap background template options)
++
++ Change Routing such that new user page is 
