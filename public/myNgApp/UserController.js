@@ -128,13 +128,18 @@ angular.module("DebateCoaching", [])
 
 		function parseForm(object){
 			console.log("Information posted through form: " + JSON.stringify(object) + "\n" + JSON.stringify($scope.hisDays) + "\n" + JSON.stringify($scope.hisTimes));
-			// Convert number to string to facilitate parsing of JSON string into object in future
+			// Convert numbers to string to facilitate parsing of JSON string into object in future
 			if (object["Experience"] == 1) {
 				object["Experience"] = object["Experience"] + " Year";
 			}
 			else {
 				object["Experience"] = object["Experience"] + " Years";
 			}
+
+			if (!isNaN(object["Maximum_Students"])) {
+				object["Maximum_Students"] += "";
+			}
+
 			
 			console.log("Received available days in controller as " + $scope.hisDays);
 			console.log("Received available times in controller as " + $scope.hisTimes);

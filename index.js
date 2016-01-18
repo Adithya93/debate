@@ -535,7 +535,7 @@ function notifyTutor(coachName, coachEmail, booking) {
   + "<link rel = 'stylesheet' href = './public/css/custom.css' type = 'text/css'></link>" + "<div#siteLogo><img src = 'cid:site_logo'></img></div></head>"
   + "<body><div>You have an appointment request!</div><div#info><p>Name of student : " + booking.studentName + " </p><p>Email : " + booking.studentEmail + " </p>"
   + "<p>Day & Time : " + booking.day + ", " + booking.time + " </p>"
-  + "</div></body></html>";
+  +  "</div></body></html>";
   email.setHtml(html);
   sendgrid.send(email, function(err, json) {
     if (err) {

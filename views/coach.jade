@@ -17,7 +17,7 @@ html(lang="en" data-ng-app="DebateCoaching")
     div.profile(ng-show="user.info")
       p Coach since {{user.since}}
       ul.info(ng-repeat= "key in user.info")
-        li <b>{{format(key[0]).toUpperCase()}}</b> : {{key[1]}}
+        li <b>{{format(key[0]).toUpperCase()}}</b> : {{format(key[1])}}
       table.history(ng-show="user.trainings")
         thead
           tr
@@ -55,7 +55,7 @@ html(lang="en" data-ng-app="DebateCoaching")
         .row
           .col-xs-10
             label(for="Maximum Students") Maximum Hours per Week
-            select.form-control(required, type='number', ng-model="coach['Maximum_Students']")
+            input.form-control(required, type='number', ng-model="coach['Maximum_Students']")
           .col-xs-2
             button.btn.btn-success Begin My Debate Coaching Adventure!
               i.glyphicon.glyphicon-plus
