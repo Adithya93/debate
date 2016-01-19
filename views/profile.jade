@@ -22,7 +22,7 @@ html(lang="en" data-ng-app="DebateCoaching")
       li 
         a(href="/about") About
       li
-        a(href="/student") My Home Page
+        a(ng-show="user" href="/student") My Home Page
       li
         a(href="/tutors") Tutors
 
