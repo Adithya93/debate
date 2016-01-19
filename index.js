@@ -68,6 +68,14 @@ app.get('/', function(req, res) {
   res.render('index');
 });
 
+app.get('/about', function(req, res) {
+  res.render('about');
+}); 
+
+app.get('/tutors', function(req, res) {
+  res.render('tutors');
+});
+
 app.get('/newUser', function(req, res) {
   res.render('newUser');
 	console.log('Redirected to new user page!');
@@ -151,7 +159,7 @@ app.get('/userInfo', function(req, res) {
   }
 });
 
-app.get('/tutors', function(req, res) {
+app.get('/tutorsList', function(req, res) {
   res.set('application/json');
   client.lrange('tutors', 0, -1, function(err, rep) {
     if (err) {
@@ -159,6 +167,7 @@ app.get('/tutors', function(req, res) {
       res.sendStatus(201);
     }
     else {
+      console.log("Tutors list retrieved from REDIS : " + rep);
       res.json(rep);
     }
   });
@@ -203,22 +212,37 @@ app.post('/student', function(req, res) {
 });
 
 app.get('/coach', function(req, res) {
+  //console.log(req.user.role);
+  //if (!req.user) {}
   if (req.user.role !== 'coach') {
-    client.hget(req.user.name, 'role', function(err, rep) {
-      if (err) {
-        console.log("Unable to look up name of user making request in REDIS : " + err);
-      }
-      else {
-        if (rep === 'coach') {
-          console.log("The user has previously registered as a coach. Allowing access to coach page.");
-          res.render('coach');
+    if (req.user.role === 'student') {
+      res.redirect('/student');
+    }
+    else {
+      client.hget(req.user.name, 'role', function(err, rep) {
+        if (err) {
+          console.log("Unable to look up name of user making request in REDIS : " + err);
         }
         else {
-          console.log('Attempt for Unauthorized Access of Coach Page detected');
-          res.redirect('/');
+          if (rep === 'coach') {
+            console.log("The user has previously registered as a coach. Allowing access to coach page.");
+            res.render('coach');
+          }
+          else {
+            console.log('Attempt for Unauthorized Access of Coach Page detected');
+            client.hget(req.user.email, 'role', function(error, reply) {
+              if (reply === 'student') {
+                console.log("User is a student, redirecting him to student page");
+                res.redirect('/student');
+              }
+              else {
+                res.redirect('/');
+              }
+            });
+          }
         }
-      }
-    });
+      });
+    }
   }
   else {
     res.render('coach');
@@ -266,10 +290,45 @@ app.get('/bookings', function(req, res) {
   }
 });
 
+// Allow users to see each other's profile pages
+app.get('/:name/profile', function(req, res) {
+  if (!req.user) { // Not signed in, redirect to home page for sign in
+    res.redirect('/');
+  }
+  else {
+    client.hgetall(req.params.name, function(err, obj) {
+      var coachInfo;
+      if (err) {
+        console.log("Unable to retrieve info for coach " + req.params.name);
+        coachInfo = null;
+      }
+      else {
+        coachInfo = obj;
+        console.log("Coach profile will have following info : " + JSON.stringify(obj));
+      }
+      res.render('profile', {coach: coachInfo});
+    });
+  }
+});
+
+// Allow coaches (or all users?) to post to their profile page
+app.post('/:name/profile', function(req, res) {
+  if (!req.user || req.user.name !== req.params.name || req.user.role !== 'coach') {
+    console.log("Unauthorized profile post request detected!");
+    res.status(401).write('You are not authorized to post here. Please sign in if you are the coach.');
+  }
+  else {
+    res.status(200).write("Coming Soon!");
+  }
+  res.end();
+});
+
+
+
 app.get('/coachInfo/:name', function(req, res) {
   res.set('application/json');
   var name = req.params.name;
-  console.log("Trying to retrieve info for coach " + name + " for student " + req.user.name);
+  //console.log("Trying to retrieve info for coach " + name + " for student " + req.user.name);
   client.hgetall(name, function(error, reply) {
     if (error) {
       console.log("Unable to retrieve coach's available times : " + error);

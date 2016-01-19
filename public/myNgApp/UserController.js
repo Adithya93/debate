@@ -84,7 +84,8 @@ angular.module("DebateCoaching", [])
 				console.log("User's trainings are of data type " + typeof($scope.user.trainings));
 
 				//if (typeof($scoper.user.trainings) === '') {
-				if ($scope.user.trainings.substring(0, 1) === "{") { // Only single training session, thus convert it into an object and put it into a list
+				//if ($scope.user.trainings.substring(0, 1) === "{") {
+					if ($scope.user.trainings && $scope.user.trainings.split("{").length < 3) { // Only single training session, thus convert it into an object and put it into a list
 					var trainList = [];
 					$scope.user.trainings = common.str2Obj($scope.user.trainings);
 					trainList.push($scope.user.trainings);
@@ -92,7 +93,13 @@ angular.module("DebateCoaching", [])
 					console.log("User's Trainings are now a single-element list: ");
 					console.log($scope.user.trainings);
 				}
-				else if (typeof ($scope.user.trainings === 'object')) { // List of training session strings, each has to be converted into object
+
+				else if (typeof $scope.user.trainings === 'string') {
+					$scope.user.trainings = str2ObjList($scope.user.trainings);
+				}
+
+
+				else if (typeof($scope.user.trainings) === 'object') { // List of training session strings, each has to be converted into object
 					console.log("List of training sessions detected");
 					$scope.user.trainings = $scope.user.trainings.map(function(val, pos) {
 						return common.str2Obj(val);
@@ -116,7 +123,7 @@ angular.module("DebateCoaching", [])
 		$scope.hisDays = [];
 		$scope.hisTimes = [];
 
-		$http.get('/tutors', function(data, status, header, config){
+		$http.get('/tutorsList', function(data, status, header, config){
 			if (status === 200) {
 				console.log("Received tutors list of " + data);
 				if (data.length > 0) {
@@ -183,6 +190,12 @@ angular.module("DebateCoaching", [])
 			.success(function(data, headers, status, config) {
 				console.log("Successfully passed new coach information to server");
 			}); 
+		};
+
+		var str2ObjList = function(str) {
+			var objList = str.split("{").slice(1).map(function(val, pos) {return "{" + val;});
+			objList = objList.map(function(val, pos) {return (pos === objList.length - 1) ? val : val.substring(0, val.length - 1);}); // Eliminate extra '"' 
+			return objList.map(function(val, pos) {return common.str2Obj(val);});
 		};
 
 	});

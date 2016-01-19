@@ -6,13 +6,20 @@ html(lang="en" data-ng-app="DebateCoaching")
     meta(name="viewport", content="width=device-width, initial-scale=1")
     link(rel="stylesheet", href="css/normalize.css")
     link(rel="stylesheet", href="css/skeleton.css")
-    link(rel="stylesheet", href="css/custom.css")
     link(rel="stylesheet", href="//fonts.googleapis.com/css?family=Raleway:400,300,600")
+    link(rel="stylesheet", href='//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/lumen/bootstrap.min.css')
+    link(rel="stylesheet", href="css/custom.css")
     link(rel="icon" type="image/png" href="favicon.png")
     script(src='//code.jquery.com/jquery-latest.min.js')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
     script(src='myNgApp/UserController.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
+
+    ul.nav.nav-pills
+      li
+        a(href="/") Home
+      li 
+        a(href="/about") About
 
   body.container-fluid(ng-controller="UserController")
     h2 Welcome {{user.name}}!
@@ -21,7 +28,7 @@ html(lang="en" data-ng-app="DebateCoaching")
       ul.info(ng-repeat= "key in user.info")
         li <b>{{format(key[0]).toUpperCase()}}</b> : {{format(key[1])}}
     span.profile(ng-show="user.info")  
-      table.history(ng-show="user.trainings")
+      table.center-table.history(ng-show="user.trainings")
         p These are your upcoming training sessions...
         thead
           tr
@@ -32,38 +39,42 @@ html(lang="en" data-ng-app="DebateCoaching")
           td {{train.day}}
           td {{train.time}}
           td {{train.status}}
-      div.prompt(ng-hide="user.trainings")
-        p You don't have any training sessions lined up...
+      div.prompt
+        p(ng-hide="user.trainings") You don't have any training sessions lined up...
         a#bookAppointments(href="/bookings") Book an appointment with my preferred tutor!
 
 
     div.info(ng-hide="user.info")
       h3 Tell Us More About Yourself!
-      form(name="studentInfo", ng-submit="updateStudent(student)")
-        .row
-          .col-xs-10
-            label(for="Experience") Years of Experience
+      form.container(name="studentInfo", ng-submit="updateStudent(student)")
+        div.form-group
+          .row
+            label(for="Experience") <b>Years of Experience</b>
             input.form-control(required, type='number', ng-model="student.Experience")
-        .row <b>Preferred Tutoring Days</b>
-          <br/>
-          span.form-inline(ng-repeat="d in days")
-            span.checkbox
-              label-inline(for="Available Days") {{d[1]}}
-                input.checkbox(type="checkbox", value="", ng-model="hisDays[d[0]]")
-        .row <b>Preferred Timings</b>
-          <br/>
-          span.form-inline(ng-repeat="t in times")
-            span.checkbox
-              label-inline(for="Available Times") {{t}}
-                input.checkbox(type="checkbox", value="", ng-model="hisTimes[times.indexOf(t)]")
-        .row
-          .col-xs-10
-            label(for="Preferred Tutor") Preferred Tutor
-            select.form-control(required, ng-model="student.Preferred_Tutor", ng-options="t for t in tutors")
-          .col-xs-2
-            button.btn.btn-success Begin My Debate Adventure!
+        div.form-group
+          .row <b>Preferred Tutoring Days</b>
+            <br/>
+            span.form-inline(ng-repeat="d in days")
+              span.checkbox
+                label-inline(for="Available Days") {{d[1]}}
+                  input.checkbox(type="checkbox", value="", ng-model="hisDays[d[0]]")
+        div.form-group
+          .row <b>Preferred Timings</b>
+            <br/>
+            span.form-inline(ng-repeat="t in times")
+              span.checkbox
+                label-inline(for="Available Times") {{t}}
+                  input.checkbox(type="checkbox", value="", ng-model="hisTimes[times.indexOf(t)]")
+        //div.form-group
+          //.row
+            //label(for="Preferred Tutor") <b>Preferred Tutor</b>
+            //select.form-control(required, ng-model="student.Preferred_Tutor", ng-options="t for t in tutors")
+        div.form-group
+          .row
+            button.btn.btn-success(type="Submit") 
               i.glyphicon.glyphicon-plus
-    span.contentHolder
+              p Begin My Debate Adventure!
+    span.contentHolder(ng-show="user.info")
       p#currentAffairs Brush up on your current affairs!
       span#content
         script(src='js/NewsFeed.js')

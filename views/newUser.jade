@@ -8,6 +8,7 @@ html(lang="en" data-ng-app="DebateCoaching")
     link(rel="stylesheet", href="css/skeleton.css")
     link(rel="stylesheet", href="css/custom.css")
     link(rel="stylesheet", href="//fonts.googleapis.com/css?family=Raleway:400,300,600")
+    link(rel="stylesheet", href='//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/lumen/bootstrap.min.css')
     link(rel="icon" type="image/png" href="favicon.png")
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
     script(src='myNgApp/UserController.js')
@@ -16,12 +17,12 @@ html(lang="en" data-ng-app="DebateCoaching")
     h2 Welcome {{user.name}}!
       div.container
         span
-          form(action="/student" method="post")
+          form.container(action="/student" method="post")
             label(for="role") Find an awesome coach!
               div.buttonHolder
                 input.button-primary(type="submit",value="I'm a (wannabe) debater!")
         span
-          form(action="/coach" method="post")
+          form.container(action="/coach" method="post")
             label(for="role") Share your wisdom!
               div.buttonHolder
                 input.button-primary(type="submit", value="I'm a coach!")

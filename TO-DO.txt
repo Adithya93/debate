@@ -4,3 +4,7 @@
 + Make the website look less ugly (Bootstrap background template options)
 +
 + Change Routing such that new user page is 
+
+
+
++ Navbar from all pages <DONE!>

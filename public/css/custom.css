@@ -20,12 +20,12 @@ span.profile {
 	text-align : center;
 }
 
+
 table.history, th, tr, td {
 	text-align : center;
-	//margin-left : 550px;
-	//display : inline;
-	margin-left : 40%;
+	margin : auto;
 }
+
 
 span.contentHolder {
 	text-align : center;
@@ -61,5 +61,8 @@ p#currentAffairs {
 	
 a#bookAppointments {
 	text-align : center;
+}
 
+th {
+	text-align : center;
 }

@@ -8,9 +8,18 @@ html(lang="en" data-ng-app="DebateCoaching")
     link(rel="stylesheet", href="css/skeleton.css")
     link(rel="stylesheet", href="css/custom.css")
     link(rel="stylesheet", href="//fonts.googleapis.com/css?family=Raleway:400,300,600")
+    link(rel="stylesheet", href='//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/lumen/bootstrap.min.css')
     link(rel="icon" type="image/png" href="favicon.png")
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
     script(src='myNgApp/UserController.js')
+
+    ul.nav.nav-pills
+      li
+        a(href="/") Home
+      li 
+        a(href="/about") About
+
+
 
   body.container-fluid(ng-controller="UserController")
     h2 Welcome {{user.name}}!
@@ -35,27 +44,31 @@ html(lang="en" data-ng-app="DebateCoaching")
     
     div.info(ng-hide="user.info")
       h3 Tell Us More About Yourself!
-      form(name="coachInfo", ng-submit="updateCoach(coach)")
-        .row
-          .col-xs-10
-            label(for="Experience") Years of Experience
-            input.form-control(required, type='number', ng-model="coach.Experience")
-        .row <b>Preferred Tutoring Days</b>
-          <br/>
-          span.form-inline(ng-repeat="d in days")
-            span.checkbox
-              label-inline(for="Available Days") {{d[1]}}
-                input.checkbox(type="checkbox", value="", ng-model="hisDays[d[0]]")
-        .row <b>Preferred Timings</b>
-          <br/>
-          span.form-inline(ng-repeat="t in times")
-            span.checkbox
-              label-inline(for="Available Times") {{t}}
-                input.checkbox(type="checkbox", value="", ng-model="hisTimes[times.indexOf(t)]")
-        .row
-          .col-xs-10
-            label(for="Maximum Students") Maximum Hours per Week
-            input.form-control(required, type='number', ng-model="coach['Maximum_Students']")
-          .col-xs-2
-            button.btn.btn-success Begin My Debate Coaching Adventure!
+      form.container(name="coachInfo", ng-submit="updateCoach(coach)")
+        div.form-group
+          .row
+              label(for="Experience") <b>Years of Experience</b>
+              input.form-control(required, type='number', ng-model="coach.Experience")
+        div.form-group
+          .row <b>Preferred Tutoring Days</b>
+            <br/>
+            span.form-inline(ng-repeat="d in days")
+              span.checkbox
+                label-inline(for="Available Days") {{d[1]}}
+                  input.checkbox(type="checkbox", value="", ng-model="hisDays[d[0]]")
+        div.form-group
+          .row <b>Preferred Timings</b>
+            <br/>
+            span.form-inline(ng-repeat="t in times")
+              span.checkbox
+                label-inline(for="Available Times") {{t}}
+                  input.checkbox(type="checkbox", value="", ng-model="hisTimes[times.indexOf(t)]")
+        div.form-group
+          .row
+              label(for="Maximum Students") <b>Maximum Hours per Week</b>
+              input.form-control(required, type='number', ng-model="coach['Maximum_Students']")
+        div.form-group
+          .row
+            button.btn.btn-success(type="Submit")
               i.glyphicon.glyphicon-plus
+              p Begin My Debate Coaching Adventure!

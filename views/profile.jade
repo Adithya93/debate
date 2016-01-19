@@ -15,32 +15,23 @@ html(lang="en" data-ng-app="DebateCoaching")
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
     script(src='myNgApp/UserController.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
-    
+
     ul.nav.nav-pills
-      li(ng-show="user")
-        a(href="/coach") My Home Page
+      li
+        a(href="/") Home
       li 
         a(href="/about") About
       li
+        a(href="/student") My Home Page
+      li
         a(href="/tutors") Tutors
 
-  body.container-fluid(ng-controller="UserController")
-    div.section.hero
-      div.container
-        h2 Debate Coaching
-        form(action="/auth/google" method="get")
-          h3 Have an Account?
-          div.row
-            div.six.columns
-          input.button-primary(type="submit",value="Sign In with Google!")
 
-        form(action="/auth/google" method="get")
-          h3 New User?
-          div.row
-            div.six.columns
-          input.button-primary(type="submit",value="Sign Up with Google!")
-
-
-
-
-        
+  body.container(ng-controller="UserController")
+    if(coach)
+      h2 #{coach.name}
+      ul#coachFields
+        each val, index in coach
+          li=index + " : " + val
+    else
+      h2 This coach has not updated his information yet. Please visit again later!

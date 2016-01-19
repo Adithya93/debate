@@ -14,33 +14,30 @@ html(lang="en" data-ng-app="DebateCoaching")
     script(src='//code.jquery.com/jquery-latest.min.js')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
     script(src='myNgApp/UserController.js')
+    script(src='myNgApp/TutorsController.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
     
     ul.nav.nav-pills
-      li(ng-show="user")
-        a(href="/coach") My Home Page
+      li
+        a(href="/") Home
       li 
         a(href="/about") About
       li
-        a(href="/tutors") Tutors
-
-  body.container-fluid(ng-controller="UserController")
-    div.section.hero
-      div.container
-        h2 Debate Coaching
-        form(action="/auth/google" method="get")
-          h3 Have an Account?
-          div.row
-            div.six.columns
-          input.button-primary(type="submit",value="Sign In with Google!")
-
-        form(action="/auth/google" method="get")
-          h3 New User?
-          div.row
-            div.six.columns
-          input.button-primary(type="submit",value="Sign Up with Google!")
+        a(href="/coach") My Home Page
+    
+  body.container-fluid(ng-controller="TutorsController")
+    p We have <b>{{tutorAvails.length}}</b> coaches!
+    table.container#Availability
+      thead 
+        tr
+          th.center Coach
+          th.center(ng-repeat = "day in days") {{day[1]}}
+      tr(ng-repeat = "tutor in tutorAvails")
+        td 
+          a(href="/{{tutor['Name']}}/profile"){{tutor['Name']}}
+        td(ng-repeat = "avail in tutor['Avail'] track by $index") {{avail}}
 
 
 
 
-        
+      
