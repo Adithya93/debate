@@ -1,5 +1,5 @@
 doctype 
-html(lang="en" data-ng-app="DebateCoaching")
+html(lang="en" data-ng-app="DebateCoaching" ng-controller="UserController")
   head
     title Debate Tutoring
     meta(charset="utf-8")
@@ -13,13 +13,16 @@ html(lang="en" data-ng-app="DebateCoaching")
     link(rel="icon" type="image/png" href="favicon.png")
     script(src='//code.jquery.com/jquery-latest.min.js')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
+    script(src='myNgApp/UserController.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
 
     ul.nav.nav-pills
       li 
-        a(href="/") Log In
+        a(ng-hide="user.role" href="/") Log In
       li
-        a(href="/coach") My Home Page
+        a(ng-show="user.role" href="/coach") My Home Page
+      li
+        a(ng-show="user" href="/tutors") Tutors
 
 
   body

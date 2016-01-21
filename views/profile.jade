@@ -1,5 +1,5 @@
 doctype 
-html(lang="en" data-ng-app="DebateCoaching")
+html(lang="en" data-ng-app="DebateCoaching" ng-controller="UserController")
   head
     title Debate Tutoring
     meta(charset="utf-8")
@@ -27,7 +27,7 @@ html(lang="en" data-ng-app="DebateCoaching")
         a(href="/tutors") Tutors
 
 
-  body.container(ng-controller="UserController")
+  body.container-fluid
     if(coach)
       h2 #{coach.name}
       ul#coachFields

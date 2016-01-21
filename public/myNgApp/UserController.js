@@ -1,6 +1,7 @@
 angular.module("DebateCoaching", [])
  .service("common", function() {
-	console.log("Current value of myTutor is " + myTutor);
+	//console.log("Current value of myTutor is " + myTutor);
+	Array.prototype.remove  = function(x) {right = this.splice(this.indexOf(x)); right.shift(); return this.concat(right)};
 	var myTutor = myTutor || undefined;
 	var days = [[0, 'Monday'], [1, 'Tuesday'], [2, 'Wednesday'], [3, 'Thursday'], [4, 'Friday'], [5, 'Saturday'], [6, 'Sunday']];
 	//var times = [['7 am', '8 am', '9 am' '7 pm', '8 pm']];
@@ -41,6 +42,7 @@ angular.module("DebateCoaching", [])
 				return val.split(":");
 			});
 			pairs.forEach(function(x) {
+				console.log(x);
 				obj[x[0].slice(1, -1)] = x[1].slice(1, -1); 
 				});
 			return obj;
@@ -63,7 +65,23 @@ angular.module("DebateCoaching", [])
 				str = str.replace("_", " ").replace(';', ', ');
 			}
 			return str;
-		}
+		},
+
+		makeReq :	function($http, name, email, tutor, day, time) {
+		var reqObj = {};
+		reqObj.studentName = name;
+		reqObj.studentEmail = email;
+		reqObj.time = time;
+		reqObj.day = day;
+		reqObj.status = "Pending";
+		$http.post('/appointments/' + tutor, reqObj)
+		.success(function(data, headers, status, config) {
+			console.log("Successfully posted request to server for appointment between " + reqObj.studentName + " and " + tutor + " at time of " + reqObj.time);
+		//	return true;
+		});
+		//return false;
+	}
+
 	};
 })
 
@@ -80,6 +98,8 @@ angular.module("DebateCoaching", [])
 				console.log("Received the following user data:\n");
 				console.log($scope.user);
 				$scope.format = common.format;
+
+				console.log("User's trainings are " + JSON.stringify($scope.user.trainings));
 
 				console.log("User's trainings are of data type " + typeof($scope.user.trainings));
 

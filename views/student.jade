@@ -1,5 +1,5 @@
 doctype 
-html(lang="en" data-ng-app="DebateCoaching")
+html(lang="en" data-ng-app="DebateCoaching" ng-controller="UserController")
   head
     title Debate Tutoring
     meta(charset="utf-8")
@@ -20,8 +20,10 @@ html(lang="en" data-ng-app="DebateCoaching")
         a(href="/") Home
       li 
         a(href="/about") About
+      li
+        a(ng-show="user.role === 'student'" href="/tutors") Tutors
 
-  body.container-fluid(ng-controller="UserController")
+  body.container-fluid
     h2 Welcome {{user.name}}!
     div.profile(ng-show="user.info")
       p#since Student since {{user.since}}

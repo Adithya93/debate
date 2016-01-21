@@ -56,7 +56,9 @@ angular.module("DebateCoaching")
 		***/
 	});
 
-	$scope.makeReq = makeReq;
+	$scope.makeReq = function(tutor, day, time) {
+		return common.makeReq($http, $scope.user.name, $scope.user.email, tutor, day, time);
+	};
 
 
 	function makeSlots(days, times) {
@@ -69,6 +71,7 @@ angular.module("DebateCoaching")
 		return slots;
 	}
 
+	/*** REFACTORED INTO SERVICE TO ALLOW USAGE FROM TUTORS CONTROLLER (FOR FIRST-TIME USERS?)
 	// Called if user is a student - Adds appointment to tutor's list with PENDING status & sends him email notification
 	function makeReq(tutor, day, time) {
 		var reqObj = {};
@@ -84,7 +87,9 @@ angular.module("DebateCoaching")
 		});
 		//return false;
 	}
+	***/
 
+	/*** DEPRECATED - FEATURE REMOVED
 	// Called if user is a tutor - Changes appointment status to CONFIRMED or DECLINED & sends student email notification
 	function confirmReq(studentName, studentEmail, day, time, status) {
 		var info = {'studentName' : studentName, 'studentEmail' : studentEmail, 'day' : day, 'time' : time, 'status' : status};
@@ -94,6 +99,7 @@ angular.module("DebateCoaching")
 			 + " with student " + studentName);
 		});
 	}
+	***/
 
 
 

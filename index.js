@@ -344,6 +344,7 @@ app.post('/appointments/:name', function(req, res) {
   var name = req.params.name;
   var reqObj = req.body;
   console.log("Received appointment request for coach " + name + " from student " + reqObj.studentName);
+  console.log("Request object is " + JSON.stringify(reqObj));
   client.hget(name, 'appointments', function(err, reply) {
     if (err) {
       console.log("Error retrieving coach's appointment list : " + err);
