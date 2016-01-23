@@ -8,10 +8,6 @@ angular.module("DebateCoaching")
 	$http.get('/tutorsList')
 		.success(function(data, status, header, config) { 
 			if (status === 200) {
-				//console.log(typeof data);
-				//if (typeof data === "object") {
-				//	console.log(data.length);
-				//}
 				console.log("Response from /tutorsList : " + data);
 				$scope.tutorNames = data;
 
@@ -31,8 +27,6 @@ angular.module("DebateCoaching")
 
 						});
 				});
-
-				//console.log("Tutor info has been saved as " + JSON.stringify($scope.tutorInfo));
 			}
 			else {
 				console.log("Unable to request from /tutorsList");
@@ -58,13 +52,11 @@ angular.module("DebateCoaching")
 
 
 	$scope.makeReq = function(name, email, tutor, dayNum, time) {
-		
-		tutor['Avail'][dayNum] --; // Decrement the number of available slots by 1
-		console.log("Times before removing " + time + " : " + JSON.stringify(tutor['Times']));
-		tutor['Times'] = tutor['Times'].remove(time);
-		console.log("Times after removing : " + JSON.stringify(tutor['Times']));
-		//console.log("The thing that just got decremented is " + tutor['Avail'][dayNum]);
-		return common.makeReq($http, name, email, tutor['Name'], $scope.days[dayNum][1], time);
+		console.log("Number of times for day " + $scope.days[dayNum][1] + " before booking : " + tutor['Avail'][dayNum].length);
+		tutor['Avail'][dayNum] = tutor['Avail'][dayNum].remove(time);
+		console.log("Number of times for day " + $scope.days[dayNum][1] + " after booking : " + tutor['Avail'][dayNum].length);
+		common.makeReq($http, name, email, tutor['Name'], $scope.days[dayNum][1], time);
+		return updateTutorDays(tutor['Name'], dayNum, time);
 	};
 
 
@@ -74,24 +66,15 @@ function getTutorDays(tutorInfo) {
 	tutorInfo.forEach(function(tutor) {
 		if (!tutor['Info']) { // If no information was retrieved for this tutor, set his availability to be 0 for all days
 			console.log("Pushing list of 0s");
-			//return [0, 0, 0, 0, 0, 0, 0];
-			//tutorAvails.push({'Name' : tutor['Name'], 'Avail' : [0, 0, 0, 0, 0, 0, 0]});
-			tutorAvails.push({'Name' : tutor['Name'], 'Avail' : [0, 0, 0, 0, 0, 0, 0], 'Times' : []});
+			tutorAvails.push({'Name' : tutor['Name'], 'Avail' : [[], [], [], [], [], [], []]});
 			return;
 		}
 		var tutorAvail = [];
 		var infoStr = tutor['Info'];
-		var infoObj = common.str2Obj(tutor['Info']);
-		console.log("Info Obj is " + JSON.stringify(infoObj));
-		//var daysInfo = common.str2Obj(tutor['Info'])['Available_Days'];
-		var daysInfo = infoObj['Available_Days'];
-		var timeInfo = infoObj['Available_Times'].split(';');
-		console.log(daysInfo);
-		$scope.days.forEach(function(val, pos) {
-			tutorAvail[pos] = daysInfo.match(val[1]) ? timeInfo.length : 0;
-		});
-		tutorAvails.push({'Name' : tutor['Name'], 'Avail' : tutorAvail, 'Times' : timeInfo});
-		return;
+		var availInfo = recoverNestedList(infoStr.substring(infoStr.indexOf("[["), infoStr.indexOf("]]") + 2));
+		console.log("Avail Info is " + JSON.stringify(availInfo));
+		tutorAvails.push({'Name' : tutor['Name'], 'Avail' : availInfo});
+
 	});
 	console.log("Tutor Avails is " + JSON.stringify(tutorAvails));
 	return tutorAvails;
@@ -99,10 +82,41 @@ function getTutorDays(tutorInfo) {
 
 
 
-function updateTutorDays() {
-
+// Update the databse with the booked times
+function updateTutorDays(tutor, day, time) {
+	var obj = {'Day' : day, 'Time' : time};
+	$http.post('/bookings/' + tutor, obj)
+		.success(function(data, headers, status, config) {
+			console.log("Booking Update post status : " + status);
+			if (status === 200) {
+				console.log("Successfully updated bookings in database.");
+				return true;
+			}
+			return false;
+		});
 }
 
 
-
+// Convert string representation of nested list from REDIS to actual nested list
+function recoverNestedList(str) {
+	var lists = str.split("[").slice(2);
+	var allLists = lists.map(function(val, pos) {
+		var innerList = val.split(","); 
+		if(pos !== lists.length - 1) {
+			innerList.pop()
+		}; 
+		var last = innerList[innerList.length - 1]; 
+		last = last.substring(0,last.length - 1); 
+		innerList[innerList.length - 1] = last; 
+		innerList = innerList.map(function(value, position) {
+			return value.substring(1, value.length - 1)
+		}); 
+		return innerList;
+	}); 
+	var lastList = allLists[allLists.length - 1]; 
+	var last = lastList[lastList.length - 1]; 
+	last = last.substring(0,last.length - 1); 
+	allLists[allLists.length - 1][lastList.length - 1] = last; 
+	return allLists;
+}
 });

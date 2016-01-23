@@ -236,7 +236,7 @@ app.get('/coach', function(req, res) {
                 res.redirect('/student');
               }
               else {
-                res.redirect('/');
+                res.redirect('/'); // Unregistered user
               }
             });
           }
@@ -276,7 +276,8 @@ app.post('/coach/info', function(req, res) {
     }
     else {
       console.log(response);
-      res.redirect('/coach');
+      //res.redirect('/coach');
+      res.sendStatus(200);
     }
   });
 });
@@ -416,6 +417,41 @@ app.post('/appointments/:name', function(req, res) {
   });
 });
 
+app.post('/bookings/:name', function(req, res) {
+  var name = req.params.name;
+  var booking = req.body;
+  var day = booking['Day'];
+  var time = booking['Time'];
+  client.hget(name, 'info', function(err, rep) {
+    if (err) {
+      console.log("Unable to retrieve info for tutor " + name + " : " + err);
+    }
+    else {
+      if (rep === null || rep === undefined) {
+        console.log("No information in database for tutor?");
+        res.sendStatus(404);
+      }
+      else {
+        var infoObj = JSON.parse(rep);
+        console.log("Type of availability list : " + typeof (infoObj["dayTimes"]));
+        var newAvails = infoObj["dayTimes"];
+        newAvails[day] = newAvails[day].remove(time);
+        infoObj["dayTimes"] = newAvails;
+        var newInfoStr = JSON.stringify(infoObj);
+        client.hmset(name, 'info', newInfoStr, function(error, reply) {
+          if (error) {
+            console.log("Unable to decrement booking: " + error);
+          }
+          else {
+            console.log("Updated Bookings in Database? " + reply);
+            res.sendStatus(200);
+          }
+        });
+      }
+    }
+  });
+});
+
 app.post('/confirmations/:name', function(req, res) {
   var name = req.params.name;
   var booking = req.body;
@@ -448,6 +484,10 @@ app.post('/confirmations/:name', function(req, res) {
 app.get('/profile', function(req, res) {
 });
 ***/
+
+app.get('/test', function(req, res) {
+  res.render('test');
+});
 
 function str2Obj(str) {
       var obj = {};
@@ -653,3 +693,5 @@ function handleStudentRejection(coachName, booking) {
   });
 }
 ***/
+Array.prototype.remove  = function(x) {right = this.splice(this.indexOf(x)); right.shift(); return this.concat(right)};
+

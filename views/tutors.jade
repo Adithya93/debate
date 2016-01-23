@@ -39,14 +39,11 @@ html(lang="en" data-ng-app="DebateCoaching")
         td 
           a(href="/{{tutor['Name']}}/profile") {{tutor['Name']}}
         td.dropdown(ng-repeat="(index, avail) in tutor['Avail'] track by $index") 
-          //a.dropdown-toggle(ng-show="avail>0" href="" ng-click="makeReq(user.name, user.email, tutor, $index, '5 pm')"){{avail}}
-          a.dropdown-toggle(ng-show="avail>0" href="" data-target="#" data-toggle="dropdown") {{avail}}
+          a.dropdown-toggle(ng-show="avail.length>0" href="" data-target="#" data-toggle="dropdown") {{avail.length}}
           ul.dropdown-menu
-            li(ng-repeat="time in tutor['Times']")
+            li(ng-repeat="time in avail")
               a(href="#" ng-click="makeReq(user.name, user.email, tutor, index, time)") {{time}}
 
-    //div#test
-      //p {{testNum}}
 
 
 

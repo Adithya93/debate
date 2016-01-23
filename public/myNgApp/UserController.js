@@ -91,12 +91,19 @@ angular.module("DebateCoaching", [])
 		.success(function(data, status, header, config) {
 			if (status === 200) {
 				$scope.user = data;
-				if ($scope.user && $scope.user.info) {
-					console.log("User has info, detected on client side");
-					$scope.user.info = common.str2NestedList($scope.user.info);
-				}
+
 				console.log("Received the following user data:\n");
 				console.log($scope.user);
+				//delete $scope.user['dayTimes'];
+
+				if ($scope.user && $scope.user.info) {
+					console.log("User has info, detected on client side");
+					console.log("Info is of type " + typeof($scope.user.info));
+					$scope.user.info = $scope.user.info.substring(0, $scope.user.info.indexOf(',"dayTimes')) + "}";
+					//console.log("Deleted? " + delete $scope.user.info['dayTimes']);
+					console.log("Info is now " + $scope.user.info);
+					$scope.user.info = common.str2NestedList($scope.user.info);
+				}
 				$scope.format = common.format;
 
 				console.log("User's trainings are " + JSON.stringify($scope.user.trainings));
@@ -140,8 +147,17 @@ angular.module("DebateCoaching", [])
 		$scope.days = common.getDays();
 		$scope.times = common.getTimes();
 		$scope.tutors = ['Austin Lee', 'Ian Tay'];
+		//$scope.hisDays = [];
+		//$scope.hisTimes = [];
 		$scope.hisDays = [];
-		$scope.hisTimes = [];
+		$scope.hasDays = 
+		$scope.notEmpty = notEmpty;
+
+		for (var day = 0; day < $scope.days.length; day ++) {
+			$scope.hisDays.push($scope.times.map(function(val, pos){return 0;}));
+		}
+
+		console.log("User's days have been set to " + JSON.stringify($scope.hisDays));
 
 		$http.get('/tutorsList', function(data, status, header, config){
 			if (status === 200) {
@@ -152,9 +168,17 @@ angular.module("DebateCoaching", [])
 			}
 		});
 
+		function notEmpty(list) {
+			for (var index = 0; index < list.length; index ++) {
+				if (list[index] > 0) {
+					return true;
+				}
+			}
+			return false;
+		}
 
-		function parseForm(object){
-			console.log("Information posted through form: " + JSON.stringify(object) + "\n" + JSON.stringify($scope.hisDays) + "\n" + JSON.stringify($scope.hisTimes));
+		function parseForm(object) {
+			console.log("Information posted through form: " + JSON.stringify(object) + "\n" + JSON.stringify($scope.hisDays));// + "\n" + JSON.stringify($scope.hisTimes));
 			// Convert numbers to string to facilitate parsing of JSON string into object in future
 			if (object["Experience"] == 1) {
 				object["Experience"] = object["Experience"] + " Year";
@@ -166,31 +190,39 @@ angular.module("DebateCoaching", [])
 			if (!isNaN(object["Maximum_Students"])) {
 				object["Maximum_Students"] += "";
 			}
-
 			
 			console.log("Received available days in controller as " + $scope.hisDays);
-			console.log("Received available times in controller as " + $scope.hisTimes);
+			//console.log("Received available times in controller as " + $scope.hisTimes);
 
 			var hisDays = [];
+			var dayTimes = [];
+
 			for (var day = 0; day < $scope.hisDays.length; day ++) {
-				if ($scope.hisDays[day]) {
+				if (notEmpty($scope.hisDays[day])) {
 					hisDays.push($scope.days[day][1]);
+					var dayInfo = [];
+					$scope.hisDays[day].forEach(function(val, pos) {
+						if (val) {
+							dayInfo.push($scope.times[pos]);
+						} 
+					})
+					dayTimes.push(dayInfo);
+				}
+				else {
+					dayTimes.push([]);
 				}
 			}
-			object["Available_Days"] = hisDays;
-			var hisTimes = [];
-			for (var time = 0; time < $scope.hisTimes.length; time ++) {
-				if ($scope.hisTimes[time]) {
-					hisTimes.push($scope.times[time]);
-				}
-			}
-			object["Available_Times"] = hisTimes;
 			console.log("User's available days have been set to " + hisDays);
-			console.log("User's available times have been set to " + hisTimes);
-			while(object["Available_Days"].toString().indexOf(",") != -1 || object["Available_Times"].toString().indexOf(",") != -1) {
+			//console.log("User's available times have been set to " + hisTimes);
+			object["Available_Days"] = hisDays;
+			while(object["Available_Days"].toString().indexOf(",") != -1) {// || object["Available_Times"].toString().indexOf(",") != -1) {
 				object["Available_Days"] = object["Available_Days"].toString().replace(",", ";");
-				object["Available_Times"] = object["Available_Times"].toString().replace(",", ";");
+				//object["Available_Times"] = object["Available_Times"].toString().replace(",", ";");
 			}
+
+
+			//object['dayTimes'] = $scope.hisDays;
+			object['dayTimes'] = dayTimes;
 			return object;
 		}
 
