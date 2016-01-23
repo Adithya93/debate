@@ -1,4 +1,7 @@
 body {
+	background-image : url('../background2.jpg');
+	background-position: center;
+	background-size : 100%;
 	text-align : center;
 }
 
@@ -65,4 +68,14 @@ a#bookAppointments {
 
 th {
 	text-align : center;
+}
+
+div.container {
+	//background-image : url('../debate.jpg');
+	//background-position: center;
+	//background-repeat: repeat-y;
+}
+
+.navbar-default {
+	background-color: green !important;
 }
