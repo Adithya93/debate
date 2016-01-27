@@ -96,7 +96,8 @@ app.get('/verify', function(req, res) {
       console.log("Something went wrong while using REDIS to verify user status: " + err);
     }
     else {
-      if (obj != undefined && Object.keys(obj).length > 0) {
+      if (obj != undefined && Object.keys(obj).length > 0 && obj['role'] != undefined) {
+        //console.log("Object's role is " + obj['role']);
         res.redirect('/' + obj['role']);
       }
       else {
