@@ -15,13 +15,18 @@ html(lang="en" data-ng-app="DebateCoaching" ng-controller="UserController")
     script(src='myNgApp/UserController.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
 
-    ul.nav.nav-pills.navbar.navbar-default
+    ul.nav.nav-pills.navbar.navbar-default.flashBack
       li
         a(href="/") Home
       li 
         a(href="/about") About
       li
-        a(ng-show="user.role === 'student'" href="/tutors") Tutors
+        //a(ng-show="user.role === 'student'" href="/tutors") Tutors
+        a(href="/tutors") Tutors
+      li
+        a(href="/contact") Contact
+      li(ng-show="user.role")
+        a(href="/logout") Log Out
 
   body.container-fluid
     h2 Welcome {{user.name}}!

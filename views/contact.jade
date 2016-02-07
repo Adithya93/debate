@@ -19,22 +19,28 @@ html(lang="en" data-ng-app="DebateCoaching" ng-controller="UserController")
     ul.nav.nav-pills.navbar.navbar-default.flashBlack
       li
         a(href="/") Home
-      li 
+      li
         a(href="/about") About
       li
-        a(ng-show="user" href="/student") My Home Page
+        a(ng-show="user.role" href="/coach") My Home Page
       li
+        //a(ng-show="user" href="/tutors") Tutors
         a(href="/tutors") Tutors
-      li
-        a(href="/contact") Contact Us
-      
+      li.navbar-right.pad(ng-hide="user.role")
+        a(href="/login") Log In
+      //li.navbar-right.pad(ng-show="user.role")
+        //a(href="/logout" method="/post") Log Out
 
 
-  body.container-fluid
-    if(coach)
-      h2 #{coach.name}
-      ul#coachFields
-        each val, index in coach
-          li=index + " : " + val
-    else
-      h2 This coach has not updated his information yet. Please visit again later!
+
+  body
+    div#team
+        h2 Reach Out!
+        ul
+          li <strong>Co-Founder</strong>: Austin Lee - <em>yu.chuan.lee@duke.edu</em>
+          li <strong>Co-Founder</strong>: Sophia Aliza Jamal - <em>sophiaj.aliza@gmail.com</em>
+          li <strong>Bugs?</strong>: Adithya Raghunathan - <em>ra102@duke.edu</em>  
+    
+
+
+

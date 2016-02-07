@@ -124,7 +124,9 @@ app.get('/verify', function(req, res) {
 app.get('/userInfo', function(req, res) {
   console.log("Received request from client side for user info\n");
   // If request is made by client-side before Google Sign-In has occurred, tell it to wait
-  if (!req.user) {
+  console.log("Req.user is " + req.user);
+  console.log("Is user inactive? " + req.inactive);
+  if (!req.user || req.inactive) {
     res.sendStatus(201).end();
   }
   else{
@@ -479,6 +481,31 @@ app.post('/confirmations/:name', function(req, res) {
   else {
     res.sendStatus(404);
   }
+});
+
+app.get('/login', function(req, res) {
+  res.inactive = false;
+  res.render('login');
+});
+
+
+app.get('/logout', function(req, res) {
+  if (req.user === null || (req.user.role !== 'student' && req.user.role !== 'coach')) {
+    console.log("Invalid logout attempt, please check client-side logic");
+    //res.sendStatus(404);
+  }
+  //else {
+    
+    //req.user = null; // DOES NOT WORK
+    req.inactive = true;
+    console.log("Session deleted");
+  //}
+  //res.sendStatus(200);
+  res.redirect('/');
+});
+
+app.get('/contact', function(req, res) {
+  res.render('contact');
 });
 
 /*** KIV - Needs form upload

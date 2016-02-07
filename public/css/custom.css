@@ -1,5 +1,5 @@
 body {
-	background-image : url('../background2.jpg');
+	//background-image : url('../background2.jpg');
 	background-position: center;
 	background-size : 100%;
 	text-align : center;
@@ -77,5 +77,26 @@ div.container {
 }
 
 .navbar-default {
-	background-color: lightgreen !important;
+	background-color: lightgray !important;
+}
+
+/***
+.flashBack {
+	border-left: 0px !important;
+	border-right: 0px !important;
+	padding-left: 0px !important;
+	padding-right: 0px !important;
+}
+***/
+
+.flashBlack :hover {
+	background-color : black !important;
+}
+
+.pad {
+	padding-right: 20px !important;
+	border-left: 0px !important;
+	border-right: 0px !important;
+	//padding-left: 0px !important;
+	//padding-right: 0px !important;
 }

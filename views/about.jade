@@ -16,13 +16,19 @@ html(lang="en" data-ng-app="DebateCoaching" ng-controller="UserController")
     script(src='myNgApp/UserController.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
 
-    ul.nav.nav-pills.navbar.navbar-default
-      li 
-        a(ng-hide="user.role" href="/") Log In
+    ul.nav.nav-pills.navbar.navbar-default.flashBlack
+      li
+        a(href="/") Home
       li
         a(ng-show="user.role" href="/coach") My Home Page
       li
         a(ng-show="user" href="/tutors") Tutors
+      li
+        a(href="/contact") Contact Us
+      li.navbar-right.pad(ng-hide="user.role")
+        a(ng-hide="user.role" href="/login") Sign In/Up
+
+
 
 
   body
@@ -42,7 +48,7 @@ html(lang="en" data-ng-app="DebateCoaching" ng-controller="UserController")
       ul
         li <strong>Co-Founder</strong>: Austin Lee
         li <strong>Co-Founder</strong>: Sophia Aliza Jamal 
-        li <strong>CTO</strong>: Adithya Raghunathan 
+        li Burden: Adithya Raghunathan 
 
 
 

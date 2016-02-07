@@ -13,6 +13,16 @@ html(lang="en" data-ng-app="DebateCoaching")
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
     script(src='myNgApp/UserController.js')
 
+  ul.nav.nav-pills.navbar.navbar-default.flashBlack
+      li(ng-show="user")
+        a(href="/coach") My Home Page
+      li 
+        a(href="/about") About
+      li
+        a(href="/tutors") Tutors
+
+
+
   body.container-fluid(ng-controller="UserController")
     h2 Welcome {{user.name}}!
       div.container

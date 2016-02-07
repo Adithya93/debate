@@ -15,11 +15,17 @@ html(lang="en" data-ng-app="DebateCoaching")
     script(src='myNgApp/UserController.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
 
-    ul.nav.nav-pills.navbar.navbar-default
+    ul.nav.nav-pills.navbar.navbar-default.flashBlack
       li
         a(href="/") Home
       li 
         a(href="/about") About
+      li
+        a(href="/contact") Contact
+      li
+        a(href="/tutors") Tutors
+      //li.navbar-right.pad(ng-show="user.role")
+        //a(href="/logout" method="post") Log Out
 
 
 

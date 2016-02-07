@@ -94,6 +94,7 @@ angular.module("DebateCoaching", [])
 
 				console.log("Received the following user data:\n");
 				console.log($scope.user);
+				console.log("User's role is " + $scope.user.role);
 				//delete $scope.user['dayTimes'];
 
 				if ($scope.user && $scope.user.info) {

@@ -17,13 +17,19 @@ html(lang="en" data-ng-app="DebateCoaching")
     script(src='myNgApp/TutorsController.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
     
-    ul.nav.nav-pills.navbar.navbar-default
+    ul.nav.nav-pills.navbar.navbar-default.flashBlack
       li
         a(href="/") Home
       li 
         a(href="/about") About
-      li
+      li(ng-show="user.role")
         a(href="/coach") My Home Page
+      li
+        a(href="/contact") Contact Us
+      li.navbar-right.pad(ng-hide="user.role")
+        a(href="/login") Sign Up/In
+      //li.navbar-right.pad(ng-show="user.role")
+        //a(href="/logout") Log Out
     
   body.container-fluid(ng-controller="TutorsController")
     div#numCoaches
