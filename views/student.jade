@@ -21,12 +21,14 @@ html(lang="en" data-ng-app="DebateCoaching" ng-controller="UserController")
       li 
         a(href="/about") About
       li
+        a(href="#") My Home Page
+      li
         //a(ng-show="user.role === 'student'" href="/tutors") Tutors
         a(href="/tutors") Tutors
       li
         a(href="/contact") Contact
-      li(ng-show="user.role")
-        a(href="/logout") Log Out
+      //li(ng-show="user.role")
+        //a(href="/logout") Log Out
 
   body.container-fluid
     h2 Welcome {{user.name}}!

@@ -20,9 +20,11 @@ html(lang="en" data-ng-app="DebateCoaching" ng-controller="UserController")
       li
         a(href="/") Home
       li
+        a(href="#") About
+      li
         a(ng-show="user.role" href="/coach") My Home Page
       li
-        a(ng-show="user" href="/tutors") Tutors
+        a(href="/tutors") Tutors
       li
         a(href="/contact") Contact Us
       li.navbar-right.pad(ng-hide="user.role")
