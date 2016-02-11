@@ -16,13 +16,13 @@ html(lang="en" data-ng-app="DebateCoaching")
     script(src='myNgApp/UserController.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')     
 
-    ul.nav.nav-pills.navbar.navbar-default.flashBlack
+    ul.nav.nav-pills.navbar.navbar-default.flashBlack(ng-controller="UserController")
       li 
         a(href="#") Home
-      li(ng-show="user")
-        a(href="/coach") My Home Page
       li 
         a(href="/about") About
+      li(ng-show="user")
+        a(href="/coach") My Home Page
       li
         a(href="/tutors") Tutors
       li
