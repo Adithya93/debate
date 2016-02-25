@@ -18,8 +18,8 @@ html(lang="en" data-ng-app="DebateCoaching")
     script(src='js/jquery.fittext.js')
     script(src='js/wow.min.js')
     script(src='js/creative.js')     
-
-    ul.nav.nav-pills.navbar.navbar-default.flashBlack(ng-controller="UserController")
+    nav
+      #mainNav.navbar.navbar-default.navbar-fixed-top(ng-controller="UserController")
       li 
         a(href="#") Home
       li 
@@ -34,27 +34,14 @@ html(lang="en" data-ng-app="DebateCoaching")
         a(href="/login") Sign Up/In
 
 
-
-
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-
-
-  footer.container.footer
-    p<b>At AscentDebating we believe in personal and tailored coaching that suits the needs of students. Our philosophy is that at the core of debating, it is about the pure critical thinking skills and intellectual curiosity that comes with it. As long as one is motivated and passionate about debating, there are no barriers to pursuing the very art and lifestyle of debating.</b>   
-
-
-
+      section.bg-primary#about
+        .container
+          .row
+            .col-lg-8.col-lg-offset-2.text-center
+              h2.section-heading Ascent Debate
+              h2.light
+              p.text-faded At AscentDebating we believe in personal and tailored coaching that suits the needs of students. Our philosophy is that at the core of debating, it is about the pure critical thinking skills and intellectual curiosity that comes with it. As long as one is motivated and passionate about debating, there are no barriers to pursuing the very art and lifestyle of debating.
+              a.btn.btn-default.btn-xl(href="#") Get Started!
 
 
         
