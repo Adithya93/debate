@@ -1,25 +1,40 @@
-nav#mainNav.navbar.navbar-default.navbar-fixed-top(ng-controller="UserController")
-  .container-fluid
-    // Brand and toggle get grouped for better mobile display
-    .navbar-header
-      button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1')
-        span.sr-only Toggle navigation
-        span.icon-bar
-        span.icon-bar
-        span.icon-bar
-      a.navbar-brand.page-scroll(href='#page-top') Ascent Debate
-    // Collect the nav links, forms, and other content for toggling
-    #bs-example-navbar-collapse-1.collapse.navbar-collapse
-      ul.nav.navbar-nav.navbar-right
-        li
-          a.page-scroll(href="#") Home
-        li
-          a(href='/about') About
-        li
-          a(href='/coach') Services
-        li
-          a(href='/tutors') Tutors
-        li
-          a(href='/contact') Contact
-        li
-          a(href='/login') Login/Sign Up
+link(rel="stylesheet", href="css/bootstrap.min.css")
+link(rel="stylesheet", href="css/animate.min.css")
+link(rel="stylesheet", href="css/creative.css")
+link(rel="stylesheet", href="css/custom.css")
+link(rel="stylesheet", href="//fonts.googleapis.com/css?family=Raleway:400,300,600")
+link(rel="icon" type="image/png" href="favicon.png")
+script(src='//code.jquery.com/jquery-latest.min.js')
+script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
+script(src='myNgApp/UserController.js')
+script(src='js/bootstrap.min.js')  
+script(src='js/jquery.easing.min.js')
+script(src='js/jquery.fittext.js')
+script(src='js/wow.min.js')
+script(src='js/creative.js')
+body#page-top
+  nav#mainNav.navbar.navbar-default.navbar-fixed-top(ng-controller="UserController")
+    .container-fluid
+      // Brand and toggle get grouped for better mobile display
+      .navbar-header
+        button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1')
+          span.sr-only Toggle navigation
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+        a.navbar-brand.page-scroll(href='#page-top') Ascent Debate
+      // Collect the nav links, forms, and other content for toggling
+      #bs-example-navbar-collapse-1.collapse.navbar-collapse
+        ul.nav.navbar-nav.navbar-right
+          li
+            a.page-scroll(href="#") Home
+          li
+            a(href='/about') About
+          li
+            a(href='/coach') Services
+          li
+            a(href='/tutors') Tutors
+          li
+            a(href='/contact') Contact
+          li
+            a(href='/login') Login/Sign Up
