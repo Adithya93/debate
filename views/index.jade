@@ -18,30 +18,52 @@ html(lang="en" data-ng-app="DebateCoaching")
     script(src='js/jquery.fittext.js')
     script(src='js/wow.min.js')
     script(src='js/creative.js')     
-    nav
-      #mainNav.navbar.navbar-default.navbar-fixed-top(ng-controller="UserController")
-      li 
-        a(href="#") Home
-      li 
-        a(href="/about") About
-      li(ng-show="user")
-        a(href="/coach") My Home Page
-      li
-        a(href="/tutors") Tutors
-      li
-        a(href="/contact") Contact Us
-      li.navbar-right.pad(ng-hide="user.role")
-        a(href="/login") Sign Up/In
+    
+    
+  body#page-top
+    nav#mainNav.navbar.navbar-default.navbar-fixed-top(ng-controller="UserController")
+      .container-fluid
+        // Brand and toggle get grouped for better mobile display
+        .navbar-header
+          button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1')
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand.page-scroll(href='#page-top') Ascent Debate
+        // Collect the nav links, forms, and other content for toggling
+        #bs-example-navbar-collapse-1.collapse.navbar-collapse
+          ul.nav.navbar-nav.navbar-right
+            li
+              a.page-scroll(href="#") Home
+            li
+              a(href='/about') About
+            li
+              a(href='/coach') Services
+            li
+              a(href='/tutors') Portfolio
+            li
+              a(href='/contact') Contact
+            li
+              a(href='/login') Login/Sign Up
+    header
+      .header-content
+        .header-content-inner
+          h1 Personalized debate coaching
+          hr
+          p
+            | At AscentDebating we believe in personal and tailored coaching that suits the needs of students. Our philosophy is that at the core of debating, it is about the pure critical thinking skills and intellectual curiosity that comes with it.
+          a.btn.btn-primary.btn-xl.page-scroll(href='#about') Find Out More
 
-
-      section.bg-primary#about
-        .container
-          .row
-            .col-lg-8.col-lg-offset-2.text-center
-              h2.section-heading Ascent Debate
-              h2.light
-              p.text-faded At AscentDebating we believe in personal and tailored coaching that suits the needs of students. Our philosophy is that at the core of debating, it is about the pure critical thinking skills and intellectual curiosity that comes with it. As long as one is motivated and passionate about debating, there are no barriers to pursuing the very art and lifestyle of debating.
-              a.btn.btn-default.btn-xl(href="#") Get Started!
+    section.bg-primary#about
+      .container
+        .row
+          .col-lg-8.col-lg-offset-2.text-center
+            h2.section-heading Ascent Debate
+            h2.light
+            p.text-faded 
+              |At AscentDebating we believe in personal and tailored coaching that suits the needs of students. Our philosophy is that at the core of debating, it is about the pure critical thinking skills and intellectual curiosity that comes with it. As long as one is motivated and passionate about debating, there are no barriers to pursuing the very art and lifestyle of debating.
+            a.btn.btn-default.btn-xl(href="#") Get Started!
 
 
         
