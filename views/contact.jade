@@ -16,23 +16,7 @@ html(lang="en" data-ng-app="DebateCoaching" ng-controller="UserController")
     script(src='myNgApp/UserController.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
 
-    ul.nav.nav-pills.navbar.navbar-default.flashBlack
-      li
-        a(href="/") Home
-      li
-        a(href="/about") About
-      li
-        a(ng-show="user.role" href="/coach") My Home Page
-      li
-        //a(ng-show="user" href="/tutors") Tutors
-        a(href="/tutors") Tutors
-      li.navbar-right.pad(ng-hide="user.role")
-        a(href="/login") Log In
-      //li.navbar-right.pad(ng-show="user.role")
-        //a(href="/logout" method="/post") Log Out
-      li
-        a(href="#") Contact Us
-
+    include includes/nav.jade
 
 
   body
@@ -43,6 +27,3 @@ html(lang="en" data-ng-app="DebateCoaching" ng-controller="UserController")
           li <strong>Co-Founder</strong>: Sophia Aliza Jamal - <em>sophiaj.aliza@gmail.com</em>
           li <strong>Bugs?</strong>: Adithya Raghunathan - <em>ra102@duke.edu</em>  
     
-
-
-
