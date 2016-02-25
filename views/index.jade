@@ -4,26 +4,33 @@ html(lang="en" data-ng-app="DebateCoaching")
     title Debate Tutoring
     meta(charset="utf-8")
     meta(name="viewport", content="width=device-width, initial-scale=1")
-    
+    include includes/stdimports.jade
     include includes/nav.jade
-    header
-      .header-content
-        .header-content-inner
-          h1 Personalized debate coaching
-          hr
-          p
-            | At AscentDebating we believe in personal and tailored coaching that suits the needs of students. Our philosophy is that at the core of debating, it is about the pure critical thinking skills and intellectual curiosity that comes with it.
-          a.btn.btn-primary.btn-xl.page-scroll(href='#about') Find Out More
-
-    section.bg-primary#about
-      .container
+    .container
+      header
+        .header-content
+          .header-content-inner
+            h1 Personalized debate coaching
+            hr
+            p
+              | At AscentDebating we believe in personal and tailored coaching that suits the needs of students. Our philosophy is that at the core of debating, it is about the pure critical thinking skills and intellectual curiosity that comes with it.
+            a.btn.btn-primary.btn-xl.page-scroll(href='#about') Find Out More
         .row
-          .col-lg-8.col-lg-offset-2.text-center
-            h2.section-heading Ascent Debate
-            h2.light
-            p.text-faded 
-              |At AscentDebating we believe in personal and tailored coaching that suits the needs of students. Our philosophy is that at the core of debating, it is about the pure critical thinking skills and intellectual curiosity that comes with it. As long as one is motivated and passionate about debating, there are no barriers to pursuing the very art and lifestyle of debating.
-            a.btn.btn-default.btn-xl(href="#") Get Started!
+          img(src="img/header.jpg" style="width:800px;height:500px;")
+        
+        section#about
+          .row
+            .col-lg-8.col-lg-offset-2.text-center
+              h2.section-heading Ascent Debate
+              h2.light
+              p.text-faded 
+                |At AscentDebating we believe in personal and tailored coaching that suits the needs of students. Our philosophy is that at the core of debating, it is about the pure critical thinking skills and intellectual curiosity that comes with it. As long as one is motivated and passionate about debating, there are no barriers to pursuing the very art and lifestyle of debating.
+              a.btn.btn-default.btn-xl(href="#") Get Started!
 
-
+        section#team
+          h2 Reach Out!
+          ul
+            li <strong>Co-Founder</strong>: Austin Lee - <em>yu.chuan.lee@duke.edu</em>
+            li <strong>Co-Founder</strong>: Sophia Aliza Jamal - <em>sophiaj.aliza@gmail.com</em>
+            li <strong>Bugs?</strong>: Adithya Raghunathan - <em>ra102@duke.edu</em>  
         

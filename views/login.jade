@@ -4,39 +4,19 @@ html(lang="en" data-ng-app="DebateCoaching")
     title Debate Tutoring
     meta(charset="utf-8")
     meta(name="viewport", content="width=device-width, initial-scale=1")
-    link(rel="stylesheet", href="css/normalize.css")
-    link(rel="stylesheet", href="css/skeleton.css")
-    link(rel="stylesheet", href="css/custom.css")
-    link(rel="stylesheet", href="//fonts.googleapis.com/css?family=Raleway:400,300,600")
-    link(rel="stylesheet", href='//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/lumen/bootstrap.min.css')
-    
-    link(rel="icon" type="image/png" href="favicon.png")
-    script(src='//code.jquery.com/jquery-latest.min.js')
-    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
+    include includes/stdimports.jade
     script(src='myNgApp/UserController.js')
-    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
-    
-    ul.nav.nav-pills.navbar.navbar-default.flashBlack
-      li
-        a(href="/") Home
-      li 
-        a(href="/about") About
-      li
-        a(href="/tutors") Tutors
-      li
-        a(href="/contact") Contact Us
-
-
-  body.container-fluid(ng-controller="UserController")
-    div.section.hero
-      div.container
+    include includes/nav.jade
+  
+  .container(ng-controller="UserController")
+    .row
         h2 Debate Coaching
         form(action="/auth/google" method="get")
           h3 Have an Account?
           div.row
             div.six.columns
           input.button-primary(type="submit",value="Sign In with Google!")
-
+    .row
         form(action="/auth/google" method="get")
           h3 New User?
           div.row
