@@ -1,0 +1,31 @@
+<html> 
+  <head></head> 
+  <body> 
+    <div float='centre' id='myPublisherDiv'></div> 
+    <div id='subscribersDiv'></div> 
+    
+    <script>
+      var OT = require('opentok'); 
+      var apiKey = '45532322';
+      var sessionId = '1_MX40NTUzMjMyMn5-MTQ1ODE1NjE0OTAwMn53alJmNVVKK3VHYTd5SzI5aGx3MzhyS3l-UH4'; 
+      var token = 'T1==cGFydG5lcl9pZD00NTUzMjMyMiZzaWc9NmMyM2EwZjBhOTYxOGRkOTc2YzA1MjhhYzRlZDU0ODg0NTg0MTM5Yzpyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTFfTVg0ME5UVXpNak15TW41LU1UUTFPREUxTmpFME9UQXdNbjUzYWxKbU5WVktLM1ZIWVRkNVN6STVhR3gzTXpoeVMzbC1VSDQmY3JlYXRlX3RpbWU9MTQ1ODE1OTA3MiZub25jZT0wLjAwMDQ2NzYyNzQ1NjYzMjMxMzUzJmV4cGlyZV90aW1lPTE0NTgyNDU0NzI=';
+      var session = OT.initSession(apiKey, sessionId); 
+      session.on({ 
+          streamCreated: function(event) {
+            //console.log("Someone joined the convo! Say hi!");
+            alert("Someone joined the convo! Say hi!");
+            session.subscribe(event.stream, 'subscribersDiv', {insertMode: 'append'}); 
+          } 
+      }); 
+      session.connect(token, function(error) {
+        if (error) {
+          console.log(error.message);
+        } else {
+          //console.log("Publisher Ready!");
+          alert("Publisher Ready!");
+          session.publish('myPublisherDiv', {width: 320, height: 240}); 
+        }
+      });
+    </script> 
+  </body> 
+</html>      

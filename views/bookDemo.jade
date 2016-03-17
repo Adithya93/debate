@@ -1,0 +1,13 @@
+html
+	head
+		title Manage Appointments - #{User}
+
+		//script(src="webRTCTest/createSession.js")
+	body
+		form(method="post" action="/bookLesson")
+			//p Book an Appointment!
+			button(id="bookSession" type="submit" text-align="centre")
+				p Book an Appointment!
+		button(id="getSessions")
+			a(href="/sessions")
+				p	Check out your upcoming Appointments!

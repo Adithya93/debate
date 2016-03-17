@@ -1,4 +1,6 @@
 var redis = require('redis');
+var dotenv = require('dotenv');
+dotenv.load();
 
 var client = redis.createClient(process.env.REDIS_URL);
 client.on('connect', function(err, res) {
@@ -6,6 +8,7 @@ client.on('connect', function(err, res) {
 		console.log('Unable to connect: ' + err);
 	}
 	else {
+		console.log("CONNECTED TO REDIS");
 		console.log(res);
 	}
 });

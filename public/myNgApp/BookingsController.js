@@ -56,6 +56,14 @@ angular.module("DebateCoaching")
 		***/
 	});
 
+
+	$http.get('/sessions')
+		.success(function(data, status, header, config) {
+			console.log("Data received from sessions path : " + JSON.stringify(data))	
+	
+	});
+
+
 	$scope.makeReq = function(tutor, day, time) {
 		return common.makeReq($http, $scope.user.name, $scope.user.email, tutor, day, time);
 	};
@@ -100,6 +108,13 @@ angular.module("DebateCoaching")
 		});
 	}
 	***/
+
+
+	function getSessions() {
+
+	}
+
+
 
 
 

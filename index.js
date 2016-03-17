@@ -15,6 +15,11 @@ var redis = require('redis');
 
 var sendgrid = require('sendgrid')(process.env.SENDGRID_API_KEY);
 
+var OpenTok = require('opentok');
+console.log("Type of OpenTok : " + typeof OpenTok);
+var opentok = OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_API_SECRET);
+
+
 app.listen(process.env.PORT || 3000, function() {
   console.log("Here we go!");
 });
@@ -721,5 +726,233 @@ function handleStudentRejection(coachName, booking) {
   });
 }
 ***/
+app.get('/lesson/:student/:coach', function(req, res) {
+  res.render('lessonDemo', {'Tutor' : req.params.coach, 'Student' : req.params.student});
+});
+
+
+app.get('/bookDemo', function(req, res) {
+  res.render('bookDemo', {'User' : req.user.name});
+});
+
+
+app.post('/bookLesson', function(req, res) {
+  //var bookingInfo = req.body;
+  console.log("User " + req.user.name + " is booking an appointment");
+  opentok.createSession({mediaMode:'routed', archiveMode:'always'}, function(err, session) {
+    if (err){
+      console.log(err);
+    } 
+    else {
+      res.sendStatus(200);
+      console.log("Session ID is " + session.sessionId);
+      // Generate Tokens for coach and student
+      var studentToken = session.generateToken({
+        'role' :       'subscriber',
+        'expireTime' : (new Date().getTime() / 1000)+(7 * 24 * 60 * 60), // in one week
+        //'data' :       'name=Johnny'
+      });
+
+      var coachToken = session.generateToken({
+        'role' :       'publisher',
+        'expireTime' : (new Date().getTime() / 1000)+(7 * 24 * 60 * 60), // in one week
+        //'data' :       'name=Johnny'
+      });
+
+
+      // Retrieve client's existing list of booking session ids and add this one to the back
+      
+      //var sessionObj = {'sessionID' : session.sessionId, 'activeDay' : }
+      var studentSessionObj = {'sesionID' : session.sessionId, 'token' : studentToken, 'bookedOn' : new Date()}; // TEMPORARY
+      var coachSessionObj = {'sesionID' : session.sessionId, 'token' : coachToken, 'bookedOn' : new Date()}; // TEMPORARY
+      
+      saveSession(req.user.email, studentSessionObj);
+      //saveCoachSession(); TO BE ADDED SOON
+    }  
+  });
+});
+
+
+app.get('/sessions', function(req, res) {
+  //var id;
+  if (req.user.role === 'student') {
+    //res.json(retrieveSessions(req.user.email));    
+    //id = req.user.email;
+    client.hget(req.user.email, 'sessions', function(err, sessions) {
+    if (err) {
+      console.log("Error retrieving student's sessions... Is this a registered email address? " + err);
+    }
+    else {
+      console.log("Non-stringified sessions : " + sessions);
+      //console.log("User's sessions : " + JSON.stringify(sessions));
+      //res.json(sessions);
+      res.json(JSON.parse(sessions));
+      //return sessions;
+    }
+  });
+
+  }
+  else if (req.user.role === 'coach') {
+    //res.json(retrieveSessions(req.user.name));
+    //id = req.user.name;
+    client.hget(req.user.name, 'sessions', function(err, sessions) {
+    if (err) {
+      console.log("Error retrieving student's sessions... Is this a registered coach name? " + err);
+    }
+    else {
+      console.log("User's sessions : " + sessions);
+      //return sessions;
+      res.json(JSON.parse(sessions));
+    }
+  });
+
+  }
+  else {
+    //var result = retrieveSessions(req.user.email) || retrieveSessions(req.user.name);
+    //if (result) {
+    //  res.json(result);
+    //}
+    client.hget(req.user.email, 'sessions', function(err, sessions) {
+      if (err) {
+        console.log("Error retrieving student's sessions... Is this a registered email address? " + err);
+      }
+      else {
+        console.log(typeof sessions);
+        //console.log(JSON.parse(sessions));
+        console.log(sessions);
+        console.log("Unknown whether user is student or coach. Value for email key : " + sessions);
+        if (sessions === undefined || sessions === null) {
+          client.hget(req.user.email, 'sessions', function(error, sessions2) {
+            if (error) {
+              console.log("Error retrieving student's sessions... Is this a registered email address? " + err);
+            }
+            else {
+              console.log("Value for name key : " + sessions2);
+              if (sessions2 === undefined || sessions2 === null) {
+                console.log("No sessions found for this user at all!");
+                res.sendStatus(404);
+              }
+              else {
+               console.log("Choosing value for name key");
+               res.json(JSON.parse(sessions2)); 
+              }
+            }
+          });
+        }
+        else {
+          res.json(JSON.parse(sessions));
+        }
+        //res.json(sessions);
+        //return sessions;
+      }
+    }); 
+  }
+});
+
+
+function saveSession(id, session) {
+  console.log("The session object that is going to be saved is " + JSON.stringify(session));
+  client.hget(id, 'sessions', function(error, list) {
+  if (error) {
+    console.log("Unable to retrieve any info for this user email... Is user registered? " + error);
+  }
+  else {
+    console.log("User's current list of sessions is " + JSON.stringify(list));
+    
+    if (typeof list === "object" && list != null && list.length > 0) {
+      console.log("First element of list : " + list[0]);
+    }
+    
+    console.log("Done printing user's list of sessions");
+    var newList;
+    if (typeof list === undefined || list === null) {
+      newList = [];
+    }
+    else if (typeof list === "object" && list.length === 0) {
+      console.log("List is object");
+      newList = list;
+    }
+    else if (typeof list === "string") {
+      console.log("List is string");
+      //newList = JSON.parse(list);
+      if (list.substring(0, 1) !== '[') {
+        newList = [JSON.parse(list)];
+      }
+      else {
+        newList = JSON.parse(list);
+      }
+      //var contents = JSON.parse(list);
+      console.log("Type of new list : " + typeof newList);
+      console.log("Contents of new list : " + JSON.stringify(newList));
+      //newList = [];
+    }
+
+    newList.push(JSON.stringify(session));
+    console.log("The state of new list is " + JSON.stringify(newList));
+    client.hmset(id, 'sessions', JSON.stringify(newList), function(err2, reply) {
+      if (err2) {
+        console.log("Unable to save booking session " + err2);
+      }
+      else {
+        console.log("Successfully saved booking session " + reply);
+      }
+    });
+  }
+  });
+}
+
+
+/***
+function saveCoachSession(coachName, session) {
+  client.hget(coachName, 'sessions', function(error, list) {
+  if (error) {
+    console.log("Unable to retrieve any info for this user email... Is user registered? " + error);
+  }
+  else {
+    console.log("User's current list of sessions is " + list);
+    var newList;
+    if (typeof list === undefined || list === null) {
+      newList = [];
+    }
+    else if (typeof list === "object" && list.length === 0) {
+      newList = list;
+    }
+    else if (typeof list === "string") {
+      //newList = JSON.stringify(list);
+      newList = JSON.parse(list);
+    }
+
+    newList.push(session);
+    client.hmset(coachName, 'sessions', newList, function(err2, reply) {
+      if (err2) {
+        console.log("Unable to save booking session " + err2);
+      }
+      else {
+        console.log("Successfully saved booking session " + reply);
+      }
+    });
+  }
+  });
+}
+***/
+
+/***
+function retrieveSessions(id) {
+  client.hget(id, 'sessions', function(err, sessions) {
+    if (err) {
+      console.log("Error retrieving student's sessions... Is this a registered email address? " + err);
+    }
+    else {
+      console.log("User's sessions : " + JSON.stringify(sessions));
+      return sessions;
+    }
+  });
+  //return null;
+}
+***/
+
+
+
+
 Array.prototype.remove  = function(x) {right = this.splice(this.indexOf(x)); right.shift(); return this.concat(right)};
 
