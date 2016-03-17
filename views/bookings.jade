@@ -25,3 +25,7 @@ html(lang="en" data-ng-app="DebateCoaching")
         a(href="/student") My Home Page
 
   body.container-fluid(ng-controller="BookingsController")
+    div#startLesson(ng-show="enableSession")
+      button(ng-click="startLesson()")
+        a(href="#") Start My Lesson!
+

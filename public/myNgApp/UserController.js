@@ -80,6 +80,11 @@ angular.module("DebateCoaching", [])
 		//	return true;
 		});
 		//return false;
+		$http.post('/bookLessons/' + tutor, reqObj)
+		.success(function(data, headers, status, config) {
+			console.log("Successfully posted request to server for session between " + reqObj.studentName + " and " + tutor + " at time of " + reqObj.time);
+		//	return true;
+		});
 	}
 
 	};

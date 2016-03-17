@@ -59,8 +59,14 @@ angular.module("DebateCoaching")
 
 	$http.get('/sessions')
 		.success(function(data, status, header, config) {
-			console.log("Data received from sessions path : " + JSON.stringify(data))	
-	
+			console.log("Data received from sessions path : " + JSON.stringify(data));
+			$scope.sessions = data;
+			console.log("Soonest session is : " + data[0] + " and it is scheduled for " + data[0].day " and " data[0].time);
+			//$scope.soonestDay = data[0].day;
+			var today = new Date();
+			$scope.soonest = data[0];
+			$scope.enableSession = (today.getDay() === data[0]) && (Math.abs(data[0].time - today.getTime()) < 1000 * 60 * 5); 
+			console.log("Is session enabled? " + $scope.enableSession)
 	});
 
 
@@ -126,6 +132,16 @@ angular.module("DebateCoaching")
 			return data;
 		});
 	}
+
+	function startLesson() {
+		if (!($scope.enableSession)) {
+			return;
+		}
+		$http.get('/lesson/' + $scope.soonest.sessionID + "/" + $scope.soonest.token + "/" + $scope.user.name + "/" + $scope.soonest.tutor)
+			.success(function(data, status, header, config) {
+				console.log("Made request to launch session successfully!");
+			});
+		}
 
 });
 

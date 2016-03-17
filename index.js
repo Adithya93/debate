@@ -726,8 +726,13 @@ function handleStudentRejection(coachName, booking) {
   });
 }
 ***/
-app.get('/lesson/:student/:coach', function(req, res) {
-  res.render('lessonDemo', {'Tutor' : req.params.coach, 'Student' : req.params.student});
+//app.get('/lesson/:student/:coach', function(req, res) {
+app.get('/lesson/:session_id/:token/:student/:coach', function(req, res) {
+  var sID = req.params.session_id;
+  var token = req.params.token;
+  var student = req.params.student;
+  var coach = req.params.coach;
+  res.render('lessonDemo', {'apiKey' : process.env.OPENTOK_API_KEY, 'sessionId' : sID, 'token' : token, 'Tutor' : coach, 'Student' : student});
 });
 
 
@@ -736,8 +741,9 @@ app.get('/bookDemo', function(req, res) {
 });
 
 
-app.post('/bookLesson', function(req, res) {
-  //var bookingInfo = req.body;
+app.post('/bookLesson/:tutor', function(req, res) {
+  var bookingInfo = req.body;
+  var tutor = req.params.tutor;
   console.log("User " + req.user.name + " is booking an appointment");
   opentok.createSession({mediaMode:'routed', archiveMode:'always'}, function(err, session) {
     if (err){
@@ -763,8 +769,8 @@ app.post('/bookLesson', function(req, res) {
       // Retrieve client's existing list of booking session ids and add this one to the back
       
       //var sessionObj = {'sessionID' : session.sessionId, 'activeDay' : }
-      var studentSessionObj = {'sesionID' : session.sessionId, 'token' : studentToken, 'bookedOn' : new Date()}; // TEMPORARY
-      var coachSessionObj = {'sesionID' : session.sessionId, 'token' : coachToken, 'bookedOn' : new Date()}; // TEMPORARY
+      var studentSessionObj = {'sessionID' : session.sessionId, 'token' : studentToken, 'tutor' : tutor, 'lessonDay': bookingInfo.day, 'lessonTime': bookingInfo.time, 'bookedOn' : new Date()};
+      var coachSessionObj = {'sessionID' : session.sessionId, 'token' : coachToken, 'student' : bookingInfo.studentName, 'lessonDay': bookingInfo.day, 'lessonTime': bookingInfo.time, 'bookedOn' : new Date()}; // TEMPORARY
       
       saveSession(req.user.email, studentSessionObj);
       //saveCoachSession(); TO BE ADDED SOON
