@@ -4,7 +4,38 @@ html
       OpenTOK Test for Ascent Debate
     Booyakasha Bounty!
     script(src="webRTCTest/openTOKmin.js")
-    script(src="webRTCTest/OpenTOKDemo.js") 
+    //script(src="webRTCTest/OpenTOKDemo.js")
+    script.
+      console.log(typeof sessionId);
+      //var session = OT.initSession(#{apiKey}, #{'' + sessionId});
+      var session = OT.initSession("45532322", "1_MX40NTUzMjMyMn5-MTQ1ODE1NjE0OTAwMn53alJmNVVKK3VHYTd5SzI5aGx3MzhyS3l-UH4"); 
+      session.on({ 
+        streamCreated: function(event) {
+          //console.log("Someone joined the convo! Say hi!");
+          alert("Someone joined the convo! Say hi!");
+          session.subscribe(event.stream, 'subscribersDiv', {insertMode: 'append'}); 
+        } 
+      });
+
+      //var token = session.generateToken({
+      //  'role' :       'publisher',
+      //  'expireTime' : (new Date().getTime() / 1000)+(7 * 24 * 60 * 60), // in one week
+        //'data' :       'name=Johnny'
+      //});
+      //var token = OT.generateToken("1_MX40NTUzMjMyMn5-MTQ1ODE1NjE0OTAwMn53alJmNVVKK3VHYTd5SzI5aGx3MzhyS3l-UH4", {
+      //  'role' :       'publisher',
+      //  'expireTime' : (new Date().getTime() / 1000)+(7 * 24 * 60 * 60), // in one week
+      //  //'data' :       'name=Johnny'
+      //}); 
+      session.connect(#{token}, function(error) {
+      if (error) {
+        console.log(error.message);
+      } else {
+        //console.log("Publisher Ready!");
+        alert("Publisher Ready!");
+        session.publish('myPublisherDiv', {width: 320, height: 240}); 
+      }
+      });  
   
   body
     p(text-align="centre") First Video should appear below

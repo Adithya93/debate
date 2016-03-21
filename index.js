@@ -957,6 +957,20 @@ function retrieveSessions(id) {
 }
 ***/
 
+app.get('/demo', function(req, res) {
+  var demoSessionId = '1_MX40NTUzMjMyMn5-MTQ1ODE1NjE0OTAwMn53alJmNVVKK3VHYTd5SzI5aGx3MzhyS3l-UH4';
+  //var demoSession = opentok.initSession(process.env.OPENTOK_API_KEY, demoSessionId); 
+  var pubToken = opentok.generateToken(demoSessionId, {
+        'role' :       'publisher',
+        'expireTime' : (new Date().getTime() / 1000)+(7 * 24 * 60 * 60), // in one week
+        //'data' :       'name=Johnny'
+      });    
+  //res.render('OpenTOKDemo', {'apiKey' : process.env.OPENTOK_API_KEY, 'sessionId' : demoSessionId});
+  res.render('OpenTOKDemo', {'token': "'" + pubToken + "'"});
+});
+
+
+
 
 
 
