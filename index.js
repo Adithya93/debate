@@ -616,6 +616,41 @@ function handleStudentBookings(coachName, booking, status) {
 }
 
 
+
+function sendStudentSessionID(coachName, coachEmail, studentName, studentEmail, URL) {
+  var email = new sendgrid.Email();
+  email.from = 'DebateCoaching@noreply.com';
+  email.to = studentEmail;
+
+  console.log("Sending email to address " + email.to + " belonging to " + studentName);
+
+  //var fields = booking.status === 'confirmed' ? 
+  var fields = {'subject' : 'Debate Coaching - Confirmation of Appointment', 'header' : 'Congratulations ' + studentName, 'message' : 'Your appointment has been confirmed. Visit this link at the date specified below : ' + URL}; 
+  email.subject = fields.subject;
+  email.addFile({
+    cid : 'site_logo',
+    path: './public/site_logo.png'
+  });
+  // TO-DO : ADD DATE AND TIME OF SESSION TO EMAIL BY EXTRACTING THROUGH CLICK ON TUTOR.JADE
+  var html = "<html><head><h1>" + fields.header + " " + coachName + " !</h1>"
+  + "<link rel = 'stylesheet' href = './public/css/custom.css' type = 'text/css'></link>" + "<div#siteLogo><img src = 'cid:site_logo'></img></div></head>"
+  + "<body><div>" + fields.message + "</div><div#info><p>Name of coach : " + coachName + " </p><p>Email : " + coachEmail + " </p>"
+  //+ "<p>Day & Time : " + booking.day + ", " + booking.time + " </p>"
+  + "</div></body></html>";
+  email.setHtml(html);
+  sendgrid.send(email, function(err, json) {
+    if (err) {
+      console.log("Unable to send email to " + coachName + " : " + err);
+    }
+    else {
+      console.log(JSON.stringify(json));
+      return true;
+    }
+  });
+}
+
+
+
 function notifyStudent(coachName, coachEmail, booking) {
   var email = new sendgrid.Email();
   email.from = 'DebateCoaching@noreply.com';
@@ -958,16 +993,36 @@ function retrieveSessions(id) {
 ***/
 
 app.get('/demo', function(req, res) {
-  var demoSessionId = '1_MX40NTUzMjMyMn5-MTQ1ODE1NjE0OTAwMn53alJmNVVKK3VHYTd5SzI5aGx3MzhyS3l-UH4';
-  //var demoSession = opentok.initSession(process.env.OPENTOK_API_KEY, demoSessionId); 
-  var pubToken = opentok.generateToken(demoSessionId, {
-        'role' :       'publisher',
-        'expireTime' : (new Date().getTime() / 1000)+(7 * 24 * 60 * 60), // in one week
-        //'data' :       'name=Johnny'
-      });    
-  //res.render('OpenTOKDemo', {'apiKey' : process.env.OPENTOK_API_KEY, 'sessionId' : demoSessionId});
-  res.render('OpenTOKDemo', {'token': "'" + pubToken + "'"});
+  if (!req.user || (!req.user.email && !req.user.name)) {
+    console.log("User is missing credentials! " + JSON.stringify(req.user));
+    res.redirect('/login');
+  }
+  else {
+    var demoSessionId = '1_MX40NTUzMjMyMn5-MTQ1ODE1NjE0OTAwMn53alJmNVVKK3VHYTd5SzI5aGx3MzhyS3l-UH4';
+
+
+    //var demoSession = opentok.initSession(process.env.OPENTOK_API_KEY, demoSessionId); 
+    var pubToken = opentok.generateToken(demoSessionId, {
+          'role' :       'publisher',
+          'expireTime' : (new Date().getTime() / 1000)+(7 * 24 * 60 * 60), // in one week
+          //'data' :       'name=Johnny'
+        });    
+    //res.render('OpenTOKDemo', {'apiKey' : process.env.OPENTOK_API_KEY, 'sessionId' : demoSessionId});
+    sendStudentSessionID("Austin Lee", "yu.chuan.lee@duke.edu", req.user.name, req.user.email, process.env.ROOT_URL + "/demo/" + demoSessionId + "/" + pubToken);
+    //res.render('OpenTOKDemo', {'token': "'" + pubToken + "'"});
+    res.render('OpenTOKDemo', {'apiKey' : "'" + process.env.OPENTOK_API_KEY + "'", 'sessionId' : "'" + demoSessionId + "'", 'token': "'" + pubToken + "'"});
+  }
 });
+
+app.get('/demo/:sessionID/:token', function(req, res) {
+
+  var sessionID = req.params.sessionID;
+  var token = req.params.token;
+  //sendStudentSessionID("Austin Lee", "yu.chuan.lee@duke.edu", req.user.name, req.user.email, process.enev.ROOT_URL + "/demo/" + sessionID + "/" + pubToken);
+  res.render('OpenTOKDemo', {'token': "'" + token + "'"});
+  
+});
+
 
 
 

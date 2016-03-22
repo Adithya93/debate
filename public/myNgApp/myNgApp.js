@@ -1,5 +1,5 @@
 // CURRENTLY SHIPPED TO UserController.js due to linking issues
-angular.module("DebateCoaching", [])
+angular.module("DebateCoaching", ['ngMaterial'])
  .service("common", function() {
 	console.log("Current value of myTutor is " + myTutor);
 	var myTutor = myTutor || undefined;
@@ -31,7 +31,7 @@ angular.module("DebateCoaching", [])
 				return val.split(":");
 			});
 			pairs.forEach(function(x) {
-				obj[x[0].slice(1, -1)] = x[1].slice(1, -1); 
+				obj[x[0].slice(1, -1)] = x[1].slice(1, -1);
 				});
 			return obj;
 			},
@@ -42,7 +42,7 @@ angular.module("DebateCoaching", [])
 				return val.split(":");
 			});
 			var list = pairs.map(function(val, pos) {
-				//obj[x[0].slice(1, -1)] = x[1].slice(1, -1); 
+				//obj[x[0].slice(1, -1)] = x[1].slice(1, -1);
 				return [val[0].slice(1, -1), val[1].slice(1, -1)];
 				});
 			return list;

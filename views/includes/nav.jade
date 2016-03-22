@@ -1,0 +1,48 @@
+body#page-top(ng-app="DebateCoaching" ng-cloak)
+  md-toolbar.main-nav
+    .md-toolbar-tools
+      md-button(aria-label='Go Back' href="/#")
+        b Ascent Debate
+      span(flex='')
+      md-menu(md-offset="0 60")
+        md-button.md-fab.md-mini(aria-label='Learn More' ng-click='$mdOpenMenu()')
+          md-icon.material-icons menu
+        md-menu-content
+          md-menu-item
+            md-button(href="/coach")
+              | Start Coaching
+          md-menu-item
+            md-button(href="/tutors")
+              | Our Coaches
+      md-button.md-fab.md-mini(aria-label='Login' href="login")
+        md-icon.material-icons perm_identity
+br
+br 
+br
+//ugly fix
+  //- 
+  //- nav#mainNav.navbar.navbar-default.navbar-fixed-top
+  //-   .container-fluid
+  //-     // Brand and toggle get grouped for better mobile display
+  //-     .navbar-header
+  //-       button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1')
+  //-         span.sr-only Toggle navigation
+  //-         span.icon-bar
+  //-         span.icon-bar
+  //-         span.icon-bar
+  //-       a.navbar-brand.page-scroll(href='#page-top') Ascent Debate
+  //-     // Collect the nav links, forms, and other content for toggling
+  //-     #bs-example-navbar-collapse-1.collapse.navbar-collapse
+  //-       ul.nav.navbar-nav.navbar-right
+  //-         li
+  //-           a.page-scroll(href="/#") Home
+  //-         li
+  //-           a(href='/about') About
+  //-         li
+  //-           a(href='/coach') Services
+  //-         li
+  //-           a(href='/tutors') Tutors
+  //-         li
+  //-           a(href='/contact') Contact
+  //-         li
+  //-           a(href='/login') Login/Sign Up

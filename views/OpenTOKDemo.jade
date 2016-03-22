@@ -1,14 +1,16 @@
 html 
-  head
+  head.container
     title
       OpenTOK Test for Ascent Debate
-    Booyakasha Bounty!
+    include includes/stdimports.jade
+    include includes/nav.jade
+    h3(float="centre") Time for the Showdown!
     script(src="webRTCTest/openTOKmin.js")
     //script(src="webRTCTest/OpenTOKDemo.js")
     script.
       console.log(typeof sessionId);
-      //var session = OT.initSession(#{apiKey}, #{'' + sessionId});
-      var session = OT.initSession("45532322", "1_MX40NTUzMjMyMn5-MTQ1ODE1NjE0OTAwMn53alJmNVVKK3VHYTd5SzI5aGx3MzhyS3l-UH4"); 
+      var session = OT.initSession(#{apiKey}, #{sessionId});
+      //var session = OT.initSession("45532322", "1_MX40NTUzMjMyMn5-MTQ1ODE1NjE0OTAwMn53alJmNVVKK3VHYTd5SzI5aGx3MzhyS3l-UH4"); 
       session.on({ 
         streamCreated: function(event) {
           //console.log("Someone joined the convo! Say hi!");
@@ -33,12 +35,13 @@ html
       } else {
         //console.log("Publisher Ready!");
         alert("Publisher Ready!");
-        session.publish('myPublisherDiv', {width: 320, height: 240}); 
+        session.publish('myPublisherDiv', {width: 320, height: 240, float: 'centre'}); 
       }
       });  
   
   body
-    p(text-align="centre") First Video should appear below
-    div(float='centre' id='myPublisherDiv') 
-    p(text-align="centre") Subsequent Videos should appear below
-    div(id='subscribersDiv')           
+    div.container#wrapper
+      p(text-align="centre") This is YOU
+      div(float='centre' id='myPublisherDiv') 
+      p(text-align="centre") This is your sparring partner... Be gentle!
+      div(id='subscribersDiv')           

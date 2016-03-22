@@ -4,54 +4,25 @@ html(lang="en" data-ng-app="DebateCoaching" ng-controller="UserController")
     title Debate Tutoring
     meta(charset="utf-8")
     meta(name="viewport", content="width=device-width, initial-scale=1")
-    link(rel="stylesheet", href="css/normalize.css")
-    link(rel="stylesheet", href="css/skeleton.css")
-    link(rel="stylesheet", href="css/custom.css")
-    link(rel="stylesheet", href="//fonts.googleapis.com/css?family=Raleway:400,300,600")
-    link(rel="stylesheet", href='//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/lumen/bootstrap.min.css')
-    
-    link(rel="icon" type="image/png" href="favicon.png")
-    script(src='//code.jquery.com/jquery-latest.min.js')
-    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
-    script(src='myNgApp/UserController.js')
-    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
-
-    ul.nav.nav-pills.navbar.navbar-default.flashBlack
-      li
-        a(href="/") Home
-      li
-        a(href="#") About
-      li
-        a(ng-show="user.role" href="/coach") My Home Page
-      li
-        a(href="/tutors") Tutors
-      li
-        a(href="/contact") Contact Us
-      li.navbar-right.pad(ng-hide="user.role")
-        a(ng-hide="user.role" href="/login") Sign In/Up
-
-
-
-
-  body
-    div#mission
-      h2 Mission Statement 
-      p From all corners of society, the power of speech will trump all lines of age, ethnicity and wealth. At AscentDebating we believe in personal and tailored coaching that suits the needs of students. Our philosophy is that at the core of debating, it is about the pure critical thinking skills and intellectual curiosity that comes with it. As long as one is motivated and passionate about debating, there are no barriers to pursuing the very art and lifestyle of debating.   
-    div#goals
-      h2 Goals & Objectives
-      ol#objectives
-        li To provide personal coaching that is tailored towards the strengths and needs of students 
-        li To provide free debating for those that are passionate but would otherwise not be able access opportunities in Hong Kong 
-        li To give advice on how to improve in WSDC and specific tournament strategies 
+    include includes/stdimports.jade
+    include includes/nav.jade
   
-  footer.footer
-    div#team
-      h2 Ownership & Management Structure
-      ul
-        li <strong>Co-Founder</strong>: Austin Lee
-        li <strong>Co-Founder</strong>: Sophia Aliza Jamal 
-        li Burden: Adithya Raghunathan 
-
-
-
-
+  section.bg-primary
+    .container
+      div#mission
+        h2 Mission Statement 
+        p From all corners of society, the power of speech will trump all lines of age, ethnicity and wealth. At AscentDebating we believe in personal and tailored coaching that suits the needs of students. Our philosophy is that at the core of debating, it is about the pure critical thinking skills and intellectual curiosity that comes with it. As long as one is motivated and passionate about debating, there are no barriers to pursuing the very art and lifestyle of debating.   
+      div#goals
+        h2 Goals & Objectives
+        ol#objectives
+          li To provide personal coaching that is tailored towards the strengths and needs of students 
+          li To provide free debating for those that are passionate but would otherwise not be able access opportunities in Hong Kong 
+          li To give advice on how to improve in WSDC and specific tournament strategies 
+    
+    footer.footer
+      div#team
+        h2 Ownership & Management Structure
+        ul
+          li <strong>Co-Founder</strong>: Austin Lee
+          li <strong>Co-Founder</strong>: Sophia Aliza Jamal 
+          li Burden: Adithya Raghunathan 

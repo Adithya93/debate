@@ -1,4 +1,4 @@
-angular.module("DebateCoaching", [])
+angular.module("DebateCoaching", ['ngMaterial'])
  .service("common", function() {
 	//console.log("Current value of myTutor is " + myTutor);
 	Array.prototype.remove  = function(x) {right = this.splice(this.indexOf(x)); right.shift(); return this.concat(right)};
@@ -11,7 +11,7 @@ angular.module("DebateCoaching", [])
 		//slot[0] = i - 7;
 		//slot[1] = i > 12 ? (i - 12) + " pm" : i + " am";
 		//times[i - 7] = slot;
-		times[i - 7] = i > 12 ? (i - 12) + " pm" : i + " am";   
+		times[i - 7] = i > 12 ? (i - 12) + " pm" : i + " am";
 	}
 	times[12 - 7] = "12 pm";
 
@@ -43,7 +43,7 @@ angular.module("DebateCoaching", [])
 			});
 			pairs.forEach(function(x) {
 				console.log(x);
-				obj[x[0].slice(1, -1)] = x[1].slice(1, -1); 
+				obj[x[0].slice(1, -1)] = x[1].slice(1, -1);
 				});
 			return obj;
 			},
@@ -54,7 +54,7 @@ angular.module("DebateCoaching", [])
 				return val.split(":");
 			});
 			var list = pairs.map(function(val, pos) {
-				//obj[x[0].slice(1, -1)] = x[1].slice(1, -1); 
+				//obj[x[0].slice(1, -1)] = x[1].slice(1, -1);
 				return [val[0].slice(1, -1), val[1].slice(1, -1)];
 				});
 			return list;
@@ -156,7 +156,7 @@ angular.module("DebateCoaching", [])
 		//$scope.hisDays = [];
 		//$scope.hisTimes = [];
 		$scope.hisDays = [];
-		$scope.hasDays = 
+		$scope.hasDays =
 		$scope.notEmpty = notEmpty;
 
 		for (var day = 0; day < $scope.days.length; day ++) {
@@ -196,7 +196,7 @@ angular.module("DebateCoaching", [])
 			if (!isNaN(object["Maximum_Students"])) {
 				object["Maximum_Students"] += "";
 			}
-			
+
 			console.log("Received available days in controller as " + $scope.hisDays);
 			//console.log("Received available times in controller as " + $scope.hisTimes);
 
@@ -210,7 +210,7 @@ angular.module("DebateCoaching", [])
 					$scope.hisDays[day].forEach(function(val, pos) {
 						if (val) {
 							dayInfo.push($scope.times[pos]);
-						} 
+						}
 					})
 					dayTimes.push(dayInfo);
 				}
@@ -247,20 +247,13 @@ angular.module("DebateCoaching", [])
 			$http.post('/coach/info', newObj)
 			.success(function(data, headers, status, config) {
 				console.log("Successfully passed new coach information to server");
-			}); 
+			});
 		};
 
 		var str2ObjList = function(str) {
 			var objList = str.split("{").slice(1).map(function(val, pos) {return "{" + val;});
-			objList = objList.map(function(val, pos) {return (pos === objList.length - 1) ? val : val.substring(0, val.length - 1);}); // Eliminate extra '"' 
+			objList = objList.map(function(val, pos) {return (pos === objList.length - 1) ? val : val.substring(0, val.length - 1);}); // Eliminate extra '"'
 			return objList.map(function(val, pos) {return common.str2Obj(val);});
 		};
 
 	});
-
-
-
-
-
-
-

@@ -16,7 +16,7 @@ input.checkbox {
 
 p#since {
 	margin-bottom : 20px;
-	padding-bottom: 20px; 
+	padding-bottom: 20px;
 }
 
 span.profile {
@@ -61,7 +61,7 @@ p#currentAffairs {
 	font-style : bold;
 	font-size: 20px;
 }
-	
+
 a#bookAppointments {
 	text-align : center;
 }
@@ -70,15 +70,15 @@ th {
 	text-align : center;
 }
 
-div.container {
+/*div.container {
 	//background-image : url('../debate.jpg');
 	//background-position: center;
 	//background-repeat: repeat-y;
-}
+}*/
 
-.navbar-default {
+/*.navbar-default {
 	background-color: lightgray !important;
-}
+}*/
 
 /***
 .flashBack {
@@ -88,10 +88,10 @@ div.container {
 	padding-right: 0px !important;
 }
 ***/
-
+/*
 .flashBlack :hover {
 	background-color : black !important;
-}
+}*/
 
 .pad {
 	padding-right: 20px !important;

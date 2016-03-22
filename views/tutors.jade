@@ -4,36 +4,12 @@ html(lang="en" data-ng-app="DebateCoaching")
     title Debate Tutoring
     meta(charset="utf-8")
     meta(name="viewport", content="width=device-width, initial-scale=1")
-    link(rel="stylesheet", href="css/normalize.css")
-    link(rel="stylesheet", href="css/skeleton.css")
-    link(rel="stylesheet", href="css/custom.css")
-    link(rel="stylesheet", href="//fonts.googleapis.com/css?family=Raleway:400,300,600")
-    link(rel="stylesheet", href='//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/lumen/bootstrap.min.css')
-    
-    link(rel="icon" type="image/png" href="favicon.png")
-    script(src='//code.jquery.com/jquery-latest.min.js')
-    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js')
-    script(src='myNgApp/UserController.js')
+    include includes/stdimports.jade
+    include includes/nav.jade
     script(src='myNgApp/TutorsController.js')
-    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
+
     
-    ul.nav.nav-pills.navbar.navbar-default.flashBlack
-      li
-        a(href="/") Home
-      li 
-        a(href="/about") About
-      li(ng-show="user.role")
-        a(href="/coach") My Home Page
-      li
-        a(href="#") Tutors
-      li
-        a(href="/contact") Contact Us
-      li.navbar-right.pad(ng-hide="user.role")
-        a(href="/login") Sign Up/In
-      //li.navbar-right.pad(ng-show="user.role")
-        //a(href="/logout") Log Out
-    
-  body.container-fluid(ng-controller="TutorsController")
+  .container-fluid(ng-controller="TutorsController")
     div#numCoaches
       p We have <b>{{tutorAvails.length}}</b> coaches!
     div#bookingIns
